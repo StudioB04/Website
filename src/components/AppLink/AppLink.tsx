@@ -1,5 +1,5 @@
 import { Link } from "@studio_b04/ds/uikit";
-import { useLinkClickHandler } from "react-router";
+import { useHref, useLinkClickHandler } from "react-router";
 import type { ComponentProps, MouseEvent } from "react";
 
 export interface AppLinkProps extends Omit<ComponentProps<typeof Link>, "href"> {
@@ -7,11 +7,12 @@ export interface AppLinkProps extends Omit<ComponentProps<typeof Link>, "href"> 
 }
 
 export default function AppLink({ to, onClick, ...restProps }: AppLinkProps) {
+  const href = useHref(to);
   const handleClick = useLinkClickHandler<HTMLElement>(to);
 
   return (
     <Link
-      href={to}
+      href={href}
       onClick={(event: MouseEvent<HTMLButtonElement & HTMLLinkElement>) => {
         onClick?.(event);
         if (!event.defaultPrevented) handleClick(event);

@@ -10,6 +10,7 @@ Site vitrine statique et bilingue de StudioB04 : React 19 + TypeScript, React Ro
 - **Textes :** toujours dans `src/i18n/fr.json` et `en.json` (mêmes clés), jamais en dur dans les composants.
 - **Navigation sans rechargement :** l'état global (par exemple un toast) doit vivre dans `App.tsx`, au-dessus de `<Routes>`. `GlobalLayout` est aussi réutilisé d'une page à l'autre (vérifié dans Chrome), mais il est rendu dans l'élément de chaque `<Route>` : ne pas compter sur lui pour un état qui doit survivre.
 - **Thème :** pas de bouton de changement de thème (demande abandonnée). Le site suit le réglage clair/sombre du système via les jetons du design system. Ne pas en ajouter sans demande.
+- **Préprod = GitHub Pages**, déployée à chaque push sur `main` par `.github/workflows/deploy-preprod.yml` (typecheck + tests, puis build avec `VITE_NOINDEX=true`). Le site peut donc être servi sous un sous-dossier (`/Website/`) : voir « Sous-dossier d'hébergement » plus bas. Ne pas changer le déclencheur ni l'hébergement sans demande.
 - **Tests unitaires** pour tout comportement ajouté ou modifié.
 - Les documents, textes et échanges sont en français.
 
@@ -24,19 +25,21 @@ npm run test:run     # Vitest, une exécution (npm test = mode watch)
 npm run typecheck    # tsc --noEmit
 ```
 
-Avant de livrer : `npm run typecheck && npm run test:run && npm run build`, puis `npm run preview` et vérifier dans le navigateur : aucune erreur console, navigation sans rechargement, changement de langue.
+Avant de livrer : `npm run typecheck && npm run test:run && npm run build`, puis `npm run preview` et vérifier dans le navigateur : aucune erreur console, navigation sans rechargement, changement de langue. Si le changement touche aux liens, aux chemins ou aux ressources, refaire aussi le build en mode préprod (`BASE_PATH=/Website VITE_SITE_URL=https://studiob04.github.io/Website VITE_NOINDEX=true npm run build`, puis `BASE_PATH=/Website npm run preview`, sur http://localhost:4173/Website/).
 
 ## Architecture
 
 - `index.html` : modèle du build, repères `<!--app-head-->` et `<!--app-html-->`.
-- `scripts/prerender.ts` : importe le module serveur, appelle `render(url)` pour chaque route de `getAllRoutes()`, écrit `dist/client/<chemin>/index.html`, plus `404.html`, `sitemap.xml`, `robots.txt`, puis supprime `dist/server`. Exécuté par Node directement (TypeScript sans compilation).
-- `src/entry-server.tsx` : `render(url)` = `prerender` de `react-dom/static` + `StaticRouter`, renvoie `{ html, head, locale }`.
-- `src/entry-client.tsx` : `hydrateRoot` si la page contient déjà du HTML, sinon `createRoot` (cas du serveur de dev).
+- `scripts/prerender.ts` : importe le module serveur, appelle `render(url)` pour chaque route de `getAllRoutes()`, écrit `dist/client/<chemin>/index.html`, plus `404.html`, `sitemap.xml`, `robots.txt`, puis supprime `dist/server`. En mode `NOINDEX` (préprod) : pas de `sitemap.xml`, et `robots.txt` sans `Disallow` ni ligne `Sitemap`. Exécuté par Node directement (TypeScript sans compilation).
+- `src/entry-server.tsx` : `render(url)` = `prerender` de `react-dom/static` + `StaticRouter`, renvoie `{ html, head, locale }`. Le `StaticRouter` reçoit `basename={BASE_URL}` et l'adresse préfixée par `BASE_URL`.
+- `src/entry-client.tsx` : `hydrateRoot` si la page contient déjà du HTML, sinon `createRoot` (cas du serveur de dev). `BrowserRouter` reçoit `basename={BASE_URL}`.
 - `src/routes.ts` : source unique des pages et des adresses. `getPath(pageId, locale)`, `getAlternates`, `findPage`, `getLocaleFromPath`, `getAllRoutes`. Les slugs viennent des JSON ; la langue par défaut est sans préfixe.
 - `src/App.tsx` : une `<Route>` par page et par langue (générées depuis `getAllRoutes()`), plus la 404.
-- `src/head.ts` : `renderHead()` génère les balises SEO au build. React Router ne gère pas le `<head>`.
+- `src/head.ts` : `renderHead()` génère les balises SEO au build. React Router ne gère pas le `<head>`. Ajoute `<meta name="robots" content="noindex">` sur la 404 et, si `NOINDEX`, sur toutes les pages.
+- `src/config.ts` : `SITE_URL` (`VITE_SITE_URL`, défaut `https://www.studiob04.fr`, sous-dossier compris), `BASE_URL` (`import.meta.env.BASE_URL`, défini par `BASE_PATH` dans `vite.config.ts` : `/` ou `/Website/`) et `NOINDEX` (`VITE_NOINDEX === "true"`).
+- `.github/workflows/deploy-preprod.yml` : push sur `main` → `npm ci`, `typecheck`, `test:run`, `build` avec `VITE_SITE_URL` et `BASE_PATH` issus de `actions/configure-pages` (`base_url`, `base_path`) et `VITE_NOINDEX=true`, puis publication de `dist/client` (`upload-pages-artifact` + `deploy-pages`).
 - `src/layouts/GlobalLayout/GlobalLayout.tsx` : fournit la langue (`I18nProvider`), le lien d'évitement, l'en-tête, `<main id="main">`, le pied de page. Met à jour `lang`, le titre et la description à chaque navigation, et place le focus sur le `h1` après un changement d'adresse (jamais au premier rendu).
-- `src/components/AppLink/AppLink.tsx` : `Link` du design system + `useLinkClickHandler` de React Router (navigation interne sans rechargement).
+- `src/components/AppLink/AppLink.tsx` : `Link` du design system + `useHref` (href avec le sous-dossier) + `useLinkClickHandler` de React Router (navigation interne sans rechargement).
 
 ## Conventions de code
 
@@ -46,7 +49,17 @@ Avant de livrer : `npm run typecheck && npm run test:run && npm run build`, puis
 - Alias d'import : `@/*` → `src/*`. Un alias se déclare une seule fois, dans `paths` de `tsconfig.json` ; Vite, Vitest et le pré-rendu le lisent grâce à `resolve.tsconfigPaths: true` dans `vite.config.ts` (ne pas ajouter de `resolve.alias`).
 - Styles : classes Tailwind du thème du design system, pas de CSS maison. `src/styles/global.css` (fichier tenu par le propriétaire, ne pas le modifier sans demande) ne contient que l'ordre des couches et les imports ; les styles de base (couleurs du `body`, anneau de focus) viennent du reset du design system. Pour un jeton sans classe : `bg-(--ds-bg-inverse)`, `text-(color:--ds-text-inverse)`.
 - Accessibilité (priorité du projet) : repères de page, navigations nommées, `aria-current`, `lang` sur les liens de langue, anneau de focus visible (fourni par le reset du design system), focus géré après navigation.
-- Tests : Vitest + Testing Library, à côté du code. Chercher par rôle et nom accessible, pas par classe CSS. Les tests de rendu serveur commencent par `// @vitest-environment node`.
+- Tests : Vitest + Testing Library, à côté du code. Chercher par rôle et nom accessible, pas par classe CSS. Les tests de rendu serveur commencent par `// @vitest-environment node`. `config.ts` lit l'environnement à l'import : pour tester `VITE_NOINDEX` ou `BASE_URL`, utiliser `vi.stubEnv(…)`, `vi.resetModules()` puis un `import()` dynamique du module testé, et `vi.unstubAllEnvs()` + `vi.resetModules()` dans `afterEach`.
+
+## Sous-dossier d'hébergement
+
+La préprod vit sous `https://studiob04.github.io/Website/` (sauf domaine personnalisé), donc rien ne doit supposer que le site est à la racine :
+
+- Liens internes : uniquement `Link`/`NavLink` de React Router ou `AppLink`, avec un chemin issu de `getPath()`. Jamais de `<a href="/…">`, de `window.location` ou de chemin en dur : ils ignoreraient le sous-dossier. Seules les ancres (`#main`) sont libres.
+- Ressources : images, polices et CSS passent par Vite (import ou `public/`), qui ajoute le `base`. Ne pas écrire `/chemin` en dur dans du CSS ou du JSX.
+- `SITE_URL` contient déjà le sous-dossier (c'est `base_url` de `configure-pages`) ; les URL absolues (canonical, `hreflang`, sitemap) s'écrivent `SITE_URL + getPath(…)`, sans y ajouter `BASE_URL`.
+- Le `basename` de React Router est `BASE_URL` avec son slash final, pour que le lien vers l'accueil soit `/Website/` et non `/Website`.
+- Préprod : ne jamais ajouter de `Disallow` à `robots.txt` (le `noindex` ne serait plus lu) ni de sitemap.
 
 ## Pièges connus
 
@@ -62,4 +75,6 @@ Avant de livrer : `npm run typecheck && npm run test:run && npm run build`, puis
 
 ## Hébergement
 
-Pas encore choisi. Le résultat est un dossier statique (`dist/client`). Il faut un hébergeur qui renvoie `404.html` avec le statut 404. L'URL publique se règle avec `VITE_SITE_URL` (défaut `https://www.studiob04.fr`).
+- **Préprod :** GitHub Pages (dépôt public, Settings → Pages → Source = GitHub Actions), mise à jour à chaque push sur `main`. Adresse par défaut `https://studiob04.github.io/Website/` ; domaine personnalisé possible via Settings → Pages (un fichier `CNAME` est ignoré avec un workflow Actions), puis relancer le workflow. Les pages sont publiques (noindex, mais lisibles).
+- **Production :** pas encore choisie. Le résultat est un dossier statique (`dist/client`). Il faut un hébergeur qui renvoie `404.html` avec le statut 404.
+- **Variables de build :** `VITE_SITE_URL` (défaut `https://www.studiob04.fr`), `BASE_PATH` (défaut vide, lu par `vite.config.ts`), `VITE_NOINDEX` (défaut non défini).

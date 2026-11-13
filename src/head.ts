@@ -1,4 +1,4 @@
-import { SITE_URL } from "./config";
+import { NOINDEX, SITE_URL } from "./config";
 import { defaultLocale, dictionaries, locales } from "./i18n";
 import type { Locale } from "./i18n";
 import { getAlternates, getPath } from "./routes";
@@ -32,8 +32,11 @@ export function renderHead(pageId: PageId | "notFound", locale: Locale): string 
     `<meta name="description" content="${escapeHtml(description)}" />`,
   ];
 
-  if (pageId === "notFound") {
+  if (pageId === "notFound" || NOINDEX) {
     tags.push(`<meta name="robots" content="noindex" />`);
+  }
+
+  if (pageId === "notFound") {
     return tags.join("\n    ");
   }
 

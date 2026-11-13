@@ -36,7 +36,7 @@ Le site est alors sur http://localhost:5173, et aussi sur le réseau local (`vit
 
 1. `build:client` compile le code du navigateur dans `dist/client`. Le fichier `index.html` sert de modèle, avec deux repères : `<!--app-head-->` et `<!--app-html-->`.
 2. `build:server` compile `src/entry-server.tsx` en un module Node. Sa fonction `render(url)` utilise le rendu statique de React 19 (`prerender`) avec un `StaticRouter`.
-3. `prerender` (`scripts/prerender.ts`) appelle `render()` pour chaque page et chaque langue, insère le HTML et le `<head>` dans le modèle, et écrit un `index.html` par page. Il génère aussi `404.html`, `sitemap.xml` et `robots.txt`, puis supprime `dist/server`.
+3. `prerender` (`scripts/prerender.ts`) appelle `render()` pour chaque page et chaque langue, insère le HTML et le `<head>` dans le modèle, et écrit un `index.html` par page. Il génère aussi `404.html`, `sitemap.xml` et `robots.txt` (pas de sitemap en préprod, voir plus bas), puis supprime `dist/server`.
 
 **Dans le navigateur**, `src/entry-client.tsx` hydrate le HTML existant. Ensuite, la navigation passe par React Router : aucune page n'est rechargée. React réutilise le même `GlobalLayout` d'une page à l'autre (vérifié dans Chrome : les éléments DOM de l'en-tête, du contenu et du pied de page restent les mêmes, y compris au changement de langue). Pour un état global qui doit survivre à la navigation (un toast, par exemple), le plus sûr est de le placer dans `App.tsx`, au-dessus de `<Routes>`. Seul un rafraîchissement du navigateur ou la saisie d'une adresse recharge le site.
 
@@ -65,7 +65,7 @@ Les textes des pages et des mentions légales sont pour l'instant des textes pro
 
 ## SEO
 
-`src/head.ts` génère au build, pour chaque page : titre, description, URL canonique, liens `hreflang` (dont `x-default` vers le français), Open Graph, et JSON-LD sur l'accueil. La page 404 est en `noindex`. Côté navigateur, `GlobalLayout` met à jour le titre, la description et l'attribut `lang` à chaque changement de page.
+`src/head.ts` génère au build, pour chaque page : titre, description, URL canonique, liens `hreflang` (dont `x-default` vers le français), Open Graph, et JSON-LD sur l'accueil. La page 404 est en `noindex`, ainsi que toutes les pages de la préprod (voir « Préproduction »). Côté navigateur, `GlobalLayout` met à jour le titre, la description et l'attribut `lang` à chaque changement de page.
 
 ## Accessibilité
 
@@ -91,7 +91,7 @@ Il n'y a pas de bouton de changement de thème. Le site suit le réglage clair/s
 
 ## Tests
 
-Vitest, jsdom et Testing Library. Les tests sont à côté du code (`*.test.ts(x)`). Ils couvrent les routes et les chemins par langue, les fichiers de langue, le `<head>` (SEO), l'application (lien d'évitement, page courante, sélecteur de langue, accueil à la racine, page 404, focus après navigation) et le pré-rendu serveur (`entry-server.test.tsx`, exécuté sans jsdom).
+Vitest, jsdom et Testing Library. Les tests sont à côté du code (`*.test.ts(x)`). Ils couvrent les routes et les chemins par langue, les fichiers de langue, le `<head>` (SEO), l'application (lien d'évitement, page courante, sélecteur de langue, accueil à la racine, page 404, focus après navigation) et le pré-rendu serveur (`entry-server.test.tsx`, exécuté sans jsdom), `AppLink` et les liens sous un sous-dossier d'hébergement, et le mode préprod (`noindex`).
 
 ## Structure
 
@@ -99,6 +99,7 @@ Vitest, jsdom et Testing Library. Les tests sont à côté du code (`*.test.ts(x
 index.html                  modèle HTML du build
 public/                     favicon
 scripts/prerender.ts        pré-rendu : une page HTML par route, 404, sitemap, robots
+.github/workflows/         déploiement de la préprod sur GitHub Pages (deploy-preprod.yml)
 vite.config.ts              Vite, React, Tailwind, Vitest
 src/
   App.tsx                   routes (une par page et par langue) et 404
@@ -106,7 +107,7 @@ src/
   entry-server.tsx          rendu statique d'une URL
   routes.ts                 pages, chemins par langue, alternates
   head.ts                   balises SEO du <head>
-  config.ts                 URL publique du site
+  config.ts                 URL publique, sous-dossier d'hébergement (BASE_URL) et mode préprod (NOINDEX)
   i18n/                     fr.json, en.json, I18nProvider, useI18n, format()
   components/               un dossier par composant (Header/Header.tsx, Footer, LanguageSwitcher, SkipLink, PageHeader, AppLink) et index.ts qui les exporte
   layouts/                  un dossier par layout (GlobalLayout/GlobalLayout.tsx : structure commune des pages) et index.ts
@@ -134,14 +135,47 @@ Pour ajouter un composant : créer `src/components/<Nom>/<Nom>.tsx` (`export def
 
 ## Configuration
 
-`VITE_SITE_URL` définit l'URL publique (canonical, `hreflang`, sitemap). Valeur par défaut : `https://www.studiob04.fr`. Exemple : `VITE_SITE_URL=https://exemple.fr npm run build`.
+Trois variables, lues au build (aucune n'est nécessaire pour un build local ordinaire) :
 
-## Hébergement
+| Variable         | Rôle                                                                                                | Défaut                    |
+| ---------------- | --------------------------------------------------------------------------------------------------- | ------------------------- |
+| `VITE_SITE_URL`  | URL publique complète, sous-dossier compris (canonical, `hreflang`, sitemap)                        | `https://www.studiob04.fr` |
+| `BASE_PATH`      | Sous-dossier d'hébergement (`/Website`). Devient le `base` de Vite et le `basename` de React Router | vide (racine du domaine)  |
+| `VITE_NOINDEX`   | `true` : mode préprod (`noindex` sur toutes les pages, pas de sitemap)                              | non défini                |
 
-Servir le dossier `dist/client`. Configurer l'hébergeur pour renvoyer `404.html` avec le statut 404 pour les adresses inconnues. Cette page est en français uniquement, y compris pour une adresse inconnue sous `/en/`.
+`BASE_PATH` n'a pas le préfixe `VITE_` car il est lu par `vite.config.ts` (Node) ; le code du site reçoit le résultat par `import.meta.env.BASE_URL`, exposé par `src/config.ts`.
+
+## Préproduction (GitHub Pages)
+
+Chaque push sur `main` déploie le site sur GitHub Pages grâce à `.github/workflows/deploy-preprod.yml`. Il peut aussi être lancé à la main (Actions → « Déploiement préprod » → Run workflow).
+
+Le workflow :
+
+1. installe les dépendances (`npm ci`) ;
+2. lance `npm run typecheck` et `npm run test:run` : un échec bloque le déploiement ;
+3. construit le site avec `VITE_SITE_URL` et `BASE_PATH` fournis par `actions/configure-pages`, et `VITE_NOINDEX=true` ;
+4. publie `dist/client`.
+
+**Réglage unique :** Settings → Pages → Source = « GitHub Actions » (déjà fait).
+
+**Adresse :** par défaut `https://studiob04.github.io/Website/` (l'adresse exacte s'affiche sur l'exécution du workflow, job `deploy`). Pour utiliser un domaine à soi (par exemple `preprod.studiob04.fr`) : créer un enregistrement DNS `CNAME` vers `studiob04.github.io`, puis saisir le domaine dans Settings → Pages → Custom domain (un fichier `CNAME` dans le dépôt est ignoré avec un workflow Actions), et relancer le workflow : `configure-pages` fournit alors l'URL du domaine et un chemin vide, sans modification du code.
+
+**Pas d'indexation :** toutes les pages portent `<meta name="robots" content="noindex" />`, aucun `sitemap.xml` n'est publié, et `robots.txt` n'interdit rien. C'est voulu : un `Disallow` empêcherait les moteurs de lire la balise `noindex`. Cela n'empêche pas l'accès : le dépôt étant public, la préprod est lisible par quiconque connaît l'adresse (une préprod privée demande GitHub Enterprise Cloud). Ne pas y mettre de contenu confidentiel.
+
+**Tester le même rendu en local :**
+
+```bash
+BASE_PATH=/Website VITE_SITE_URL=https://studiob04.github.io/Website VITE_NOINDEX=true npm run build
+BASE_PATH=/Website npm run preview   # http://localhost:4173/Website/
+```
+
+## Hébergement (production)
+
+Servir le dossier `dist/client`. Configurer l'hébergeur pour renvoyer `404.html` avec le statut 404 pour les adresses inconnues. Cette page est en français uniquement, y compris pour une adresse inconnue sous `/en/`. Le choix de l'hébergeur de production n'est pas fait ; GitHub Pages ne sert que la préprod.
 
 ## Limites connues
 
 - **Icônes du design system :** elles sont bloquées par Chrome (`<use href="data:…">`). Le site n'en utilise donc aucune : ne pas utiliser `iconStart`, `iconEnd` ou `external` sur `Link` et `Button`.
 - **Poids du JavaScript :** environ 1,3 Mo (280 Ko compressé), car le composant `Icon` du design system embarque toute la bibliothèque Lucide.
-- **Page 404 :** une seule page `404.html` est générée, en français. Il n'y a pas de 404 anglaise pré-générée pour une adresse inconnue sous `/en/`.
+- **Page 404 :** une seule page `404.html` est générée, en français. Il n'y a pas de 404 anglaise pré-générée pour une adresse inconnue sous `/en/`. GitHub Pages renvoie bien ce fichier avec le statut 404.
+- **Sous-dossier :** `npm run dev` et `npm run preview` ne répondent que sous `/Website/` quand `BASE_PATH=/Website` est défini (et `/Website` sans slash final n'y est pas redirigé, contrairement à GitHub Pages).

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { SITE_URL } from "./config";
 import { escapeHtml, renderHead } from "./head";
 
@@ -34,5 +34,27 @@ describe("head", () => {
     const head = renderHead("notFound", "fr");
     expect(head).toContain('content="noindex"');
     expect(head).not.toContain("canonical");
+  });
+
+  it("does not add noindex on regular pages by default", () => {
+    expect(renderHead("home", "fr")).not.toContain("noindex");
+  });
+});
+
+describe("head in preprod mode", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("adds noindex on every page while keeping canonical and hreflang", async () => {
+    vi.stubEnv("VITE_NOINDEX", "true");
+    vi.resetModules();
+    const { renderHead: renderPreprodHead } = await import("./head");
+
+    const head = renderPreprodHead("signage", "en");
+    expect(head).toContain('<meta name="robots" content="noindex" />');
+    expect(head).toContain('rel="canonical"');
+    expect(head).toContain('hreflang="fr"');
   });
 });
