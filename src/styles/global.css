@@ -1,0 +1,7 @@
+@layer base, properties, theme, mozaic, utilities, components;
+
+@import "@studio_b04/ds/styles" layer(base);
+@import "@studio_b04/ds/reset" layer(base);
+
+@import "tailwindcss";
+@import "@studio_b04/ds/tailwind-theme" layer (threme);
