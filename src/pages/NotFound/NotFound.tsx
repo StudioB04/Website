@@ -1,15 +1,14 @@
 import { AppLink, PageHeader } from "@/components";
 import { useI18n } from "@/i18n";
-import { getPath } from "@/routes";
+import { getPath, RouterEnum } from "@/router";
 
 export default function NotFound() {
-  const { locale, messages } = useI18n();
-  const page = messages.pages.notFound;
+  const { locale, t } = useI18n();
 
   return (
     <>
-      <PageHeader heading={page.heading} intro={page.intro} />
-      <AppLink to={getPath("home", locale)} label={page.backHome} />
+      <PageHeader heading={t("pages.notFound.heading")} intro={t("pages.notFound.intro")} />
+      <AppLink to={getPath(RouterEnum.HOME, locale)} label={t("pages.notFound.backHome")} />
     </>
   );
 }

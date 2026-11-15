@@ -11,7 +11,7 @@
     "homeLink": "StudioB04 – home",
     "breadcrumb": "Breadcrumb",
     "learnMore": "Learn more",
-    "copyright": "© {year} StudioB04. All rights reserved."
+    "copyright": "© {{year}} StudioB04. All rights reserved."
   },
   "pages": {
     "home": {

@@ -1,24 +1,23 @@
 import { Link } from "react-router";
 import { localeNames, locales, useI18n } from "@/i18n";
-import { getAlternates, getPath } from "@/routes";
-import type { PageId } from "@/routes";
+import { getAlternates, getPath, RouterEnum } from "@/router";
+import type { PageId } from "@/router";
 
 export default function LanguageSwitcher({ pageId }: { pageId: PageId | null }) {
-  const { locale, messages } = useI18n();
+  const { locale, t } = useI18n();
   const alternates = pageId ? getAlternates(pageId) : null;
 
   return (
-    <nav aria-label={messages.common.languageSwitcher} className="ml-auto">
+    <nav aria-label={t("common.languageSwitcher")} className="ml-auto">
       <ul className="flex flex-wrap gap-x-3">
-        {locales.map((alt) => (
+        {locales.map(alt => (
           <li key={alt}>
             <Link
-              to={alternates ? alternates[alt] : getPath("home", alt)}
+              to={alternates ? alternates[alt] : getPath(RouterEnum.HOME, alt)}
               lang={alt}
               hrefLang={alt}
               aria-current={alt === locale ? "true" : undefined}
-              className="underline-offset-4 hover:underline aria-[current=true]:font-semibold aria-[current=true]:text-brand"
-            >
+              className="underline-offset-4 hover:underline aria-[current=true]:font-semibold aria-[current=true]:text-brand">
               {localeNames[alt]}
             </Link>
           </li>

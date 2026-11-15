@@ -1,18 +1,13 @@
-import { NOINDEX, SITE_URL } from "./config";
-import { defaultLocale, dictionaries, locales } from "./i18n";
-import type { Locale } from "./i18n";
-import { getAlternates, getPath } from "./routes";
-import type { PageId } from "./routes";
+import { NOINDEX, SITE_URL } from "@/config";
+import { defaultLocale, locales, translate } from "@/i18n";
+import type { Locale } from "@/i18n";
+import { getAlternates, getPath, RouterEnum } from "@/router";
+import type { PageId } from "@/router";
 
 const ogLocales: Record<Locale, string> = { fr: "fr_FR", en: "en_GB" };
 
 export function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 export interface PageMeta {
@@ -21,16 +16,12 @@ export interface PageMeta {
 }
 
 export function getPageMeta(pageId: PageId | "notFound", locale: Locale): PageMeta {
-  const page = dictionaries[locale].pages[pageId];
-  return { title: page.title, description: page.description };
+  return { title: translate(locale, `pages.${pageId}.title`), description: translate(locale, `pages.${pageId}.description`) };
 }
 
 export function renderHead(pageId: PageId | "notFound", locale: Locale): string {
   const { title, description } = getPageMeta(pageId, locale);
-  const tags = [
-    `<title>${escapeHtml(title)}</title>`,
-    `<meta name="description" content="${escapeHtml(description)}" />`,
-  ];
+  const tags = [`<title>${escapeHtml(title)}</title>`, `<meta name="description" content="${escapeHtml(description)}" />`];
 
   if (pageId === "notFound" || NOINDEX) {
     tags.push(`<meta name="robots" content="noindex" />`);
@@ -51,18 +42,18 @@ export function renderHead(pageId: PageId | "notFound", locale: Locale): string 
 
   tags.push(
     `<meta property="og:type" content="website" />`,
-    `<meta property="og:site_name" content="${escapeHtml(dictionaries[locale].site.name)}" />`,
+    `<meta property="og:site_name" content="${escapeHtml(translate(locale, "site.name"))}" />`,
     `<meta property="og:title" content="${escapeHtml(title)}" />`,
     `<meta property="og:description" content="${escapeHtml(description)}" />`,
     `<meta property="og:url" content="${url}" />`,
     `<meta property="og:locale" content="${ogLocales[locale]}" />`,
   );
 
-  if (pageId === "home") {
+  if (pageId === RouterEnum.HOME) {
     const jsonLd = {
       "@context": "https://schema.org",
       "@type": "Organization",
-      name: dictionaries[locale].site.name,
+      name: translate(locale, "site.name"),
       url,
       description,
     };

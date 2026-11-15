@@ -1,10 +1,10 @@
 import { StrictMode } from "react";
 import { prerender } from "react-dom/static";
 import { StaticRouter } from "react-router";
-import App from "./App";
-import { BASE_URL, NOINDEX, SITE_URL } from "./config";
-import { renderHead } from "./head";
-import { getAllRoutes, findPage, getLocaleFromPath } from "./routes";
+import App from "@/App";
+import { BASE_URL, NOINDEX, SITE_URL } from "@/config";
+import { renderHead } from "@/head";
+import { getAllRoutes, findPage, getLocaleFromPath } from "@/router";
 
 export { getAllRoutes, NOINDEX, SITE_URL };
 

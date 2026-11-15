@@ -11,7 +11,7 @@
     "homeLink": "StudioB04 – accueil",
     "breadcrumb": "Fil d'Ariane",
     "learnMore": "En savoir plus",
-    "copyright": "© {year} StudioB04. Tous droits réservés."
+    "copyright": "© {{year}} StudioB04. Tous droits réservés."
   },
   "pages": {
     "home": {

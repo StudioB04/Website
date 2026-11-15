@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, it } from "vitest";
 import App from "./App";
 import { dictionaries } from "./i18n";
-import { getAllRoutes } from "./routes";
+import { getAllRoutes } from "@/router";
 
 function renderAt(path: string) {
   return render(
@@ -52,7 +52,7 @@ describe("App", () => {
 
   it("lists every service on the home page", () => {
     renderAt("/en/");
-    expect(screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual([
+    expect(screen.getAllByRole("heading", { level: 3 }).map(heading => heading.textContent)).toEqual([
       "Digital",
       "Print",
       "Signs & wayfinding",
@@ -76,6 +76,18 @@ describe("App", () => {
     renderAt("/en/does-not-exist/");
     expect(screen.getByRole("heading", { level: 1, name: "Page not found" })).toBeDefined();
     expect(document.documentElement.lang).toBe("en");
+  });
+
+  it("keeps the same layout when navigating and when switching language", () => {
+    renderAt("/");
+    const header = screen.getByRole("banner");
+
+    fireEvent.click(within(screen.getByRole("navigation", { name: "Navigation principale" })).getByRole("link", { name: "Print" }));
+    expect(screen.getByRole("banner")).toBe(header);
+
+    fireEvent.click(within(screen.getByRole("navigation", { name: "Choix de la langue" })).getByRole("link", { name: "English" }));
+    expect(screen.getByRole("heading", { level: 1, name: dictionaries.en.pages.print.heading })).toBeDefined();
+    expect(screen.getByRole("banner")).toBe(header);
   });
 
   it("moves focus to the page heading after a client-side navigation, not on first render", () => {

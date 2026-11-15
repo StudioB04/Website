@@ -17,16 +17,13 @@ interface ServerEntry {
 
 const root = resolve(import.meta.dirname, "..");
 const clientDir = join(root, "dist", "client");
-const serverEntry = join(root, "dist", "server", "entry-server.js");
+const serverEntry = join(root, "dist", "server", "server.js");
 
 const { render, getAllRoutes, NOINDEX, SITE_URL } = (await import(pathToFileURL(serverEntry).href)) as ServerEntry;
 const template = await readFile(join(clientDir, "index.html"), "utf-8");
 
 function fillTemplate({ html, head, locale }: RenderResult): string {
-  return template
-    .replace('<html lang="fr">', `<html lang="${locale}">`)
-    .replace("<!--app-head-->", head)
-    .replace("<!--app-html-->", html);
+  return template.replace('<html lang="fr">', `<html lang="${locale}">`).replace("<!--app-head-->", head).replace("<!--app-html-->", html);
 }
 
 async function writePage(file: string, content: string) {
