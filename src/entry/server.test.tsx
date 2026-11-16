@@ -4,12 +4,12 @@ import { render } from "./server";
 
 describe("entry-server", () => {
   it("prerenders a page to static HTML with its head", async () => {
-    const { html, head, locale } = await render("/en/digital/");
+    const { html, head, locale } = await render("/en/legal-notice/");
 
     expect(locale).toBe("en");
     expect(html).toContain("<h1");
-    expect(html).toContain("Digital");
-    expect(head).toContain("<title>Digital – StudioB04</title>");
+    expect(html).toContain("Lorem ipsum");
+    expect(head).toContain("<title>Legal notice – StudioB04</title>");
   });
 
   it("prerenders the not found page for unknown URLs", async () => {
@@ -27,17 +27,27 @@ describe("entry-server under a base path (GitHub Pages)", () => {
     vi.resetModules();
   });
 
-  it("prefixes every internal link with the base path and still renders the right page", async () => {
+  async function renderUnderBase(url: string) {
     vi.stubEnv("BASE_URL", "/Website/");
     vi.resetModules();
-    const { render: renderUnderBase } = await import("@/entry/server");
+    const { render: renderPage } = await import("@/entry/server");
+    return renderPage(url);
+  }
 
-    const { html, locale } = await renderUnderBase("/en/digital/");
-    const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map(([, href]) => href);
-    const internal = hrefs.filter(href => href.startsWith("/"));
+  it("still renders the right page", async () => {
+    const { html, locale } = await renderUnderBase("/en/legal-notice/");
 
     expect(locale).toBe("en");
     expect(html).toContain("<h1");
+    expect(html).toContain("Lorem ipsum");
+  });
+
+  it("prefixes every internal link with the base path", async () => {
+    // La page 404 est, pour l'instant, la seule à avoir un lien interne : l'en-tête et le pied de page sont provisoires.
+    const { html } = await renderUnderBase("/en/unknown/");
+    const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map(([, href]) => href);
+    const internal = hrefs.filter(href => href.startsWith("/"));
+
     expect(internal.length).toBeGreaterThan(0);
     expect(internal.every(href => href.startsWith("/Website/"))).toBe(true);
   });

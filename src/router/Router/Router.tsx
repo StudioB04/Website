@@ -2,10 +2,11 @@ import { Route, Routes, useLocation } from "react-router";
 import { type Locale } from "@/i18n";
 import { GlobalLayout } from "@/layouts";
 import { getSlug, RouterEnum, getLocaleFromPath } from "@/router";
-import { Digital, Home, Legal, NotFound, Print, Signage, TradeShows } from "@/pages";
+import { ErrorPage, Home, Legal } from "@/pages";
 import { useEffect, useRef } from "react";
 import { getPageMeta } from "@/head";
 import { findPage, type PageId } from "@/router";
+import PageErrorBoundary from "../ErrorBoundary/ErrorBoundary";
 
 function useDocumentUpdate(pathname: string, locale: Locale, pageId: PageId | null) {
   const lastPathname = useRef(pathname);
@@ -28,10 +29,6 @@ function pages(locale: Locale) {
   return (
     <>
       <Route index element={<Home />} />
-      <Route path={getSlug(RouterEnum.DIGITAL, locale)} element={<Digital />} />
-      <Route path={getSlug(RouterEnum.PRINT, locale)} element={<Print />} />
-      <Route path={getSlug(RouterEnum.SIGNAGE, locale)} element={<Signage />} />
-      <Route path={getSlug(RouterEnum.TRADE_SHOWS, locale)} element={<TradeShows />} />
       <Route path={getSlug(RouterEnum.LEGAL, locale)} element={<Legal />} />
     </>
   );
@@ -47,9 +44,11 @@ export default function Router() {
   return (
     <Routes>
       <Route element={<GlobalLayout />}>
-        <Route path="/">{pages("fr")}</Route>
-        <Route path="en">{pages("en")}</Route>
-        <Route path="*" element={<NotFound />} />
+        <Route element={<PageErrorBoundary />}>
+          <Route path="/">{pages("fr")}</Route>
+          <Route path="en">{pages("en")}</Route>
+          <Route path="*" element={<ErrorPage status={404} />} />
+        </Route>
       </Route>
     </Routes>
   );

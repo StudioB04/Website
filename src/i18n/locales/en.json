@@ -81,6 +81,11 @@
       "heading": "Page not found",
       "intro": "The page you are looking for does not exist or has been moved.",
       "backHome": "Back to home"
+    },
+    "serverError": {
+      "heading": "Something went wrong",
+      "intro": "A technical problem prevents us from displaying this page. Please try again in a few moments.",
+      "backHome": "Back to home"
     }
   }
 }

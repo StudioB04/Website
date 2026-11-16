@@ -81,6 +81,11 @@
       "heading": "Page introuvable",
       "intro": "La page que vous cherchez n'existe pas ou a été déplacée.",
       "backHome": "Retour à l'accueil"
+    },
+    "serverError": {
+      "heading": "Une erreur est survenue",
+      "intro": "Un problème technique nous empêche d'afficher cette page. Réessayez dans quelques instants.",
+      "backHome": "Retour à l'accueil"
     }
   }
 }

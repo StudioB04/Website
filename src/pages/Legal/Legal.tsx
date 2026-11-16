@@ -1,20 +1,13 @@
-import { PageHeader } from "@/components";
-import { useI18n } from "@/i18n";
-
 export default function Legal() {
-  const { messages, t } = useI18n();
-
   return (
     <>
-      <PageHeader heading={t("pages.legal.heading")} intro={t("pages.legal.intro")} />
-      {messages.pages.legal.sections.map((section) => (
-        <section key={section.title} className="mt-4 first:mt-0">
-          <h2 className="mb-2 text-title-sm leading-title-sm font-semibold">
-            {section.title}
-          </h2>
-          <p>{section.text}</p>
-        </section>
-      ))}
+      <h1 tabIndex={-1} className="text-title-xl leading-title-xl font-semibold">
+        Lorem ipsum
+      </h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste est, accusantium ut ullam, adipisci cumque voluptatum dolorum sequi totam laudantium,
+        eligendi reprehenderit vitae? Quod provident laudantium, veniam, beatae maxime voluptate odio praesentium delectus nam consequuntur sit repudiandae.
+      </p>
     </>
   );
 }

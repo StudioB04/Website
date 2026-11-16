@@ -1,11 +1,11 @@
 import { defaultLocale, dictionaries, isLocale, locales, type Locale } from "@/i18n";
-import { RouterEnum } from "../RouterEnum";
+import { RouterEnum } from "@/router/RouterEnum";
 
 export type PageId = RouterEnum;
 export const pageIds: PageId[] = Object.values(RouterEnum);
 
-export const mainNavPages: PageId[] = [RouterEnum.HOME, RouterEnum.DIGITAL, RouterEnum.PRINT, RouterEnum.SIGNAGE, RouterEnum.TRADE_SHOWS];
-export const servicePages = [RouterEnum.DIGITAL, RouterEnum.PRINT, RouterEnum.SIGNAGE, RouterEnum.TRADE_SHOWS] as const;
+export const mainNavPages: PageId[] = [RouterEnum.HOME, RouterEnum.LEGAL];
+export const servicePages = [] as const;
 
 /** Adresse traduite d'une page, sans préfixe de langue ni slashs (vide pour l'accueil). */
 export function getSlug(pageId: PageId, locale: Locale): string {

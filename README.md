@@ -46,27 +46,25 @@ Le site est alors sur http://localhost:5173, et aussi sur le réseau local (`vit
 
 Le français (langue par défaut) est à la racine, les autres langues sont préfixées, et **chaque page a une adresse traduite dans chaque langue**. Il n'y a pas de redirection selon la langue du navigateur.
 
-| Page                    | Français                  | Anglais             |
-| ----------------------- | ------------------------- | ------------------- |
-| Accueil                 | `/`                       | `/en/`              |
-| Numérique               | `/numerique/`             | `/en/digital/`      |
-| Print                   | `/print/`                 | `/en/print/`        |
-| Enseigne & signalétique | `/enseigne-signaletique/` | `/en/signage/`      |
-| Salons & PLV            | `/salons-plv/`            | `/en/trade-shows/`  |
-| Mentions légales        | `/mentions-legales/`      | `/en/legal-notice/` |
+| Page             | Français             | Anglais             |
+| ---------------- | -------------------- | ------------------- |
+| Accueil          | `/`                  | `/en/`              |
+| Mentions légales | `/mentions-legales/` | `/en/legal-notice/` |
 
-`RouterEnum` (`src/router/RouterEnum.tsx`, importée par `@/router`) liste les pages par identifiant (`DIGITAL`, `TRADE_SHOWS`…), identique dans toutes les langues. L'adresse de chaque page est traduite dans `locales/fr.json` et `locales/en.json` (champ `slug` du bloc de la page ; vide pour l'accueil). Le composant `Router` (`src/router/Router/Router.tsx`) déclare les routes à la main, une `<Route>` par page : la fonction `pages(locale)` les écrit une seule fois, avec `getSlug(RouterEnum.X, locale)` comme adresse, et elle est utilisée pour le français (racine) et sous `<Route path="en">`. `src/App.tsx` se limite à fournir la langue (`I18nProvider`) et à afficher `<Router />`. `src/router/routes/routes.ts` fournit les fonctions qui dérivent les adresses complètes (`getSlug`, `getPath`, `getAlternates`, `findPage`, `getAllRoutes`), utilisées par le menu, le sélecteur de langue, `hreflang` et le sitemap. La langue par défaut est `defaultLocale` dans `src/i18n/index.tsx`. Un slug ne doit jamais être égal à un code de langue (`en`), ni à celui d'une autre page de la même langue : des tests le vérifient, et un test affiche chaque adresse de `getAllRoutes()`, ce qui détecte une `<Route>` oubliée dans `Router.tsx`.
+Ce sont les deux seules pages pour l'instant : les autres (numérique, print, enseigne, salons) ont été retirées, et leurs textes restent dans les fichiers de langue sans être utilisés. Toute autre adresse affiche la page 404.
+
+`RouterEnum` (`src/router/RouterEnum.tsx`, importée par `@/router`) liste les pages par identifiant (`HOME`, `LEGAL`), identique dans toutes les langues. L'adresse de chaque page est traduite dans `locales/fr.json` et `locales/en.json` (champ `slug` du bloc de la page ; vide pour l'accueil). Le composant `Router` (`src/router/Router/Router.tsx`) déclare les routes à la main, une `<Route>` par page : la fonction `pages(locale)` les écrit une seule fois, avec `getSlug(RouterEnum.X, locale)` comme adresse, et elle est utilisée pour le français (racine) et sous `<Route path="en">`. `src/App.tsx` se limite à fournir la langue (`I18nProvider`) et à afficher `<Router />`. `src/router/routes/routes.ts` fournit les fonctions qui dérivent les adresses complètes (`getSlug`, `getPath`, `getAlternates`, `findPage`, `getAllRoutes`), utilisées par `hreflang`, le sitemap et le lien de retour des pages d'erreur. La langue par défaut est `defaultLocale` dans `src/i18n/index.tsx`. Un slug ne doit jamais être égal à un code de langue (`en`), ni à celui d'une autre page de la même langue : des tests le vérifient, et un test affiche chaque adresse de `getAllRoutes()`, ce qui détecte une `<Route>` oubliée dans `Router.tsx`.
 
 ## Textes et traductions
 
-Tous les textes sont dans `src/i18n/locales/fr.json` et `src/i18n/locales/en.json`, qui doivent avoir exactement les mêmes clés (vérifié par TypeScript et par un test). Sous `pages`, la clé de chaque page est la valeur de `RouterEnum` (`"digital"`, `"tradeShows"`…), plus `notFound` pour la 404.
+Tous les textes sont dans `src/i18n/locales/fr.json` et `src/i18n/locales/en.json`, qui doivent avoir exactement les mêmes clés (vérifié par TypeScript et par un test). Sous `pages`, la clé de chaque page est la valeur de `RouterEnum` (`"home"`, `"legal"`), plus `notFound` (404) et `serverError` (500) pour les pages d'erreur.
 
 Les composants lisent les textes avec la fonction `t`, qui prend la clé (le chemin dans le JSON, séparé par des points) et, au besoin, les valeurs à insérer :
 
 ```tsx
 const { t } = useI18n();
 
-t("pages.digital.heading");                              // "Numérique"
+t("pages.notFound.heading");                             // "Page introuvable"
 t("common.copyright", { year: new Date().getFullYear() }); // "© 2026 StudioB04. …"
 t(`pages.${id}.navLabel`);                               // clé construite : `id` doit être un identifiant de page valide
 ```
@@ -74,9 +72,9 @@ t(`pages.${id}.navLabel`);                               // clé construite : `i
 Dans le JSON, un paramètre s'écrit `{{nom}}` : `"copyright": "© {{year}} StudioB04…"`. Les clés sont typées (`MessageKey`) : une faute de frappe ou une clé qui ne désigne pas un texte (un bloc entier, une liste) est refusée par TypeScript. Une clé introuvable à l'exécution renvoie la clé elle-même, ce qui la rend visible dans la page. Un marqueur sans valeur correspondante reste tel quel (`{{nom}}`).
 
 - `translate(locale, key, params)`, exportée par `@/i18n`, fait la même chose sans React (utilisée pour les balises du `<head>`, voir `src/head/index.ts`).
-- `useI18n()` renvoie aussi `locale` et `messages` (le dictionnaire complet). `messages` ne sert que pour les listes, qu'une clé de texte ne peut pas désigner (les sections des mentions légales : `messages.pages.legal.sections.map(...)`).
+- `useI18n()` renvoie aussi `locale` et `messages` (le dictionnaire complet). `messages` ne sert que pour les listes, qu'une clé de texte ne peut pas désigner (par exemple les sections des mentions légales, `messages.pages.legal.sections.map(...)`, inutilisées pour l'instant).
 
-Les textes des pages et des mentions légales sont pour l'instant des textes provisoires, à remplacer (les mentions légales contiennent des `[À compléter]` / `[To be completed]`).
+Pour l'instant, les pages `Home` et `Legal` n'affichent que du lorem ipsum écrit en dur, et les libellés des liens d'évitement de `GlobalLayout` sont en dur aussi : seuls les titres, descriptions et adresses (`<head>`) et les pages d'erreur passent par les fichiers de langue. Les anciens textes des pages (dont les mentions légales, avec leurs `[À compléter]`) sont toujours dans les JSON.
 
 ## SEO
 
@@ -84,8 +82,8 @@ Les textes des pages et des mentions légales sont pour l'instant des textes pro
 
 ## Accessibilité
 
-- Lien d'évitement « Aller au contenu » (`SkipLink`), repères de page (`header`, `nav`, `main`, `footer`) et navigations nommées.
-- Page courante signalée par `aria-current` dans le menu et le sélecteur de langue.
+- Liens d'évitement (`SkipLink` du design system) vers l'en-tête, le contenu, le pied de page et le sous-pied de page ; repères de page (`header`, `main`, `footer`).
+- `AppLink` et `LanguageSwitcher` (non affiché pour l'instant) signalent la page courante par `aria-current` et la langue par `lang`.
 - Anneau de focus visible sur tous les éléments, fourni par le reset du design system.
 - Après une navigation, le focus se place sur le titre `h1` de la page (pas au premier chargement).
 - Attribut `lang` sur chaque lien du sélecteur de langue.
@@ -106,7 +104,7 @@ Il n'y a pas de bouton de changement de thème. Le site suit le réglage clair/s
 
 ## Tests
 
-Vitest, jsdom et Testing Library. Les tests sont à côté du code (`*.test.ts(x)`). Ils couvrent les routes et les chemins par langue, les fichiers de langue, le `<head>` (SEO), l'application (lien d'évitement, page courante, sélecteur de langue, accueil à la racine, page 404, focus après navigation) et le pré-rendu serveur (`src/entry/server.test.tsx`, exécuté sans jsdom), le démarrage dans le navigateur (`src/entry/client.test.tsx` : `createRoot` sur une page vide, hydratation sans écart du HTML pré-rendu, sous-dossier d'hébergement), `AppLink` et les liens sous un sous-dossier d'hébergement, et le mode préprod (`noindex`).
+Vitest, jsdom et Testing Library. Les tests sont à côté du code (`*.test.ts(x)`). Ils couvrent les routes et les chemins par langue, les fichiers de langue, le `<head>` (SEO), `GlobalLayout` (`src/layouts/GlobalLayout/GlobalLayout.test.tsx`), l'application (lien d'évitement, chaque adresse de `getAllRoutes()`, accueil à la racine, page 404, focus après navigation), les pages d'erreur (`Error.test.tsx` : textes 404 et 500 dans chaque langue ; `ErrorBoundary.test.tsx` et `Router.test.tsx` : une page qui plante affiche la 500 dans le layout, sans toucher aux autres pages) et le pré-rendu serveur (`src/entry/server.test.tsx`, exécuté sans jsdom), le démarrage dans le navigateur (`src/entry/client.test.tsx` : `createRoot` sur une page vide, hydratation sans écart du HTML pré-rendu, sous-dossier d'hébergement), `AppLink` et les liens sous un sous-dossier d'hébergement, et le mode préprod (`noindex`).
 
 ## Structure
 
@@ -119,20 +117,20 @@ vite.config.ts              Vite, React, Tailwind, Vitest
 src/
   App.tsx                   fournit la langue (I18nProvider) et affiche <Router />
   entry/                    client.tsx : hydratation ; server.tsx : rendu statique d'une URL (et son test)
-  router/                   Router/Router.tsx : les <Route> écrites à la main (pages(locale) pour le français à la racine et l'anglais sous /en/, la 404) et la mise à jour de lang/titre/description/focus ; RouterEnum.tsx : les pages par identifiant ; routes/routes.ts : getSlug, getPath, getAlternates, findPage… (et tests) ; index.ts exporte le tout
+  router/                   Router/Router.tsx : les <Route> écrites à la main (pages(locale) pour le français à la racine et l'anglais sous /en/, la 404) et la mise à jour de lang/titre/description/focus ; ErrorBoundary/ErrorBoundary.tsx : la page 500 si une page plante ; RouterEnum.tsx : les pages par identifiant ; routes/routes.ts : getSlug, getPath, getAlternates, findPage… (et tests) ; index.ts exporte le tout
   head/                     index.ts : balises SEO du <head> (et son test)
   config.ts                 URL publique, sous-dossier d'hébergement (BASE_URL) et mode préprod (NOINDEX)
   i18n/                     index.tsx (I18nProvider, useI18n, t, translate), locales/fr.json et en.json
-  components/               un dossier par composant (Header/Header.tsx, Footer, LanguageSwitcher, SkipLink, PageHeader, AppLink) et index.ts qui les exporte
-  layouts/                  un dossier par layout (GlobalLayout/GlobalLayout.tsx : lien d'évitement, en-tête, <main> avec l'<Outlet />, pied de page) et index.ts
-  pages/                    un dossier par page (Home/Home.tsx, Digital/Digital.tsx, Print, Signage, TradeShows, Legal, NotFound) et index.ts qui les exporte
+  components/               un dossier par composant (AppLink, LanguageSwitcher) et index.ts qui les exporte
+  layouts/                  un dossier par layout (GlobalLayout/GlobalLayout.tsx : liens d'évitement, Header, <main> avec l'<Outlet />, Footer, SubFooter) et index.ts
+  pages/                    un dossier par page (Home, Legal : lorem ipsum ; Error/Error.tsx : pages 404 et 500) et index.ts qui les exporte
   styles/global.css         ordre des couches CSS et imports (Tailwind, design system)
   setup-tests.ts            configuration Vitest
 ```
 
 ## Alias d'import
 
-`@` pointe vers `src` : `import { Footer, PageHeader } from "@/components";`, `import { GlobalLayout } from "@/layouts";`, `import { getPath } from "@/router";` et `import { useI18n } from "@/i18n";` à la place de chemins relatifs du type `../../i18n`. Chaque composant vit dans son dossier (`src/components/<Nom>/<Nom>.tsx`) et est exporté par `src/components/index.ts` ; il en va de même pour les pages (`src/pages/index.ts`) et les layouts (`src/layouts/index.ts`). Les modules de plusieurs fichiers (`src/router`, `src/head`, `src/i18n`) suivent la même idée : un dossier, un `index.ts`, et on les importe par le dossier (`@/router`, `@/head`, `@/i18n`), pas par un fichier interne. Les alias se déclarent une seule fois, dans `paths` de `tsconfig.json` : TypeScript les utilise, et Vite (donc aussi Vitest et le pré-rendu) les lit grâce à `resolve.tsconfigPaths: true` dans `vite.config.ts`.
+`@` pointe vers `src` : `import { AppLink } from "@/components";`, `import { GlobalLayout } from "@/layouts";`, `import { getPath } from "@/router";` et `import { useI18n } from "@/i18n";` à la place de chemins relatifs du type `../../i18n`. Chaque composant vit dans son dossier (`src/components/<Nom>/<Nom>.tsx`) et est exporté par `src/components/index.ts` ; il en va de même pour les pages (`src/pages/index.ts`) et les layouts (`src/layouts/index.ts`). Les modules de plusieurs fichiers (`src/router`, `src/head`, `src/i18n`) suivent la même idée : un dossier, un `index.ts`, et on les importe par le dossier (`@/router`, `@/head`, `@/i18n`), pas par un fichier interne. Les alias se déclarent une seule fois, dans `paths` de `tsconfig.json` : TypeScript les utilise, et Vite (donc aussi Vitest et le pré-rendu) les lit grâce à `resolve.tsconfigPaths: true` dans `vite.config.ts`.
 
 Pour ajouter un composant : créer `src/components/<Nom>/<Nom>.tsx` (`export default function <Nom>`), puis ajouter `export { default as <Nom> } from "./<Nom>/<Nom>";` à `src/components/index.ts`.
 
@@ -187,11 +185,11 @@ BASE_PATH=/Website npm run preview   # http://localhost:4173/Website/
 
 ## Hébergement (production)
 
-Servir le dossier `dist/client`. Configurer l'hébergeur pour renvoyer `404.html` avec le statut 404 pour les adresses inconnues. Cette page est en français uniquement, y compris pour une adresse inconnue sous `/en/`. Le choix de l'hébergeur de production n'est pas fait ; GitHub Pages ne sert que la préprod.
+Servir le dossier `dist/client`. Configurer l'hébergeur pour renvoyer `404.html` avec le statut 404 pour les adresses inconnues. Cette page est en français uniquement, y compris pour une adresse inconnue sous `/en/`. La page d'erreur 500 n'existe pas en fichier : elle ne s'affiche que dans le navigateur, si le rendu d'une page échoue. Le choix de l'hébergeur de production n'est pas fait ; GitHub Pages ne sert que la préprod.
 
 ## Limites connues
 
 - **Icônes du design system :** elles sont bloquées par Chrome (`<use href="data:…">`). Le site n'en utilise donc aucune : ne pas utiliser `iconStart`, `iconEnd` ou `external` sur `Link` et `Button`.
 - **Poids du JavaScript :** environ 1,3 Mo (280 Ko compressé), car le composant `Icon` du design system embarque toute la bibliothèque Lucide.
-- **Page 404 :** une seule page `404.html` est générée, en français. Il n'y a pas de 404 anglaise pré-générée pour une adresse inconnue sous `/en/`. GitHub Pages renvoie bien ce fichier avec le statut 404.
+- **Page 404 :** une seule page `404.html` est générée, en français. Il n'y a pas de 404 anglaise pré-générée pour une adresse inconnue sous `/en/`. Le navigateur affiche bien la page en anglais, mais l'hydratation signale l'erreur React #418 dans la console (le HTML français ne correspond pas), puis refait le rendu côté client. GitHub Pages renvoie bien ce fichier avec le statut 404.
 - **Sous-dossier :** `npm run dev` et `npm run preview` ne répondent que sous `/Website/` quand `BASE_PATH=/Website` est défini (et `/Website` sans slash final n'y est pas redirigé, contrairement à GitHub Pages).

@@ -7,9 +7,5 @@
  */
 export enum RouterEnum {
   HOME = "home",
-  DIGITAL = "digital",
-  PRINT = "print",
-  SIGNAGE = "signage",
-  TRADE_SHOWS = "tradeShows",
   LEGAL = "legal",
 }

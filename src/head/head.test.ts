@@ -9,13 +9,13 @@ describe("head", () => {
   });
 
   it("renders title, description, canonical and hreflang links", () => {
-    const head = renderHead(RouterEnum.SIGNAGE, "fr");
-    expect(head).toContain("<title>Enseigne &amp; signalétique – StudioB04</title>");
+    const head = renderHead(RouterEnum.LEGAL, "fr");
+    expect(head).toContain("<title>Mentions légales – StudioB04</title>");
     expect(head).toContain('<meta name="description"');
-    expect(head).toContain(`<link rel="canonical" href="${SITE_URL}/enseigne-signaletique/" />`);
-    expect(head).toContain(`hreflang="fr" href="${SITE_URL}/enseigne-signaletique/"`);
-    expect(head).toContain(`hreflang="en" href="${SITE_URL}/en/signage/"`);
-    expect(head).toContain(`hreflang="x-default" href="${SITE_URL}/enseigne-signaletique/"`);
+    expect(head).toContain(`<link rel="canonical" href="${SITE_URL}/mentions-legales/" />`);
+    expect(head).toContain(`hreflang="fr" href="${SITE_URL}/mentions-legales/"`);
+    expect(head).toContain(`hreflang="en" href="${SITE_URL}/en/legal-notice/"`);
+    expect(head).toContain(`hreflang="x-default" href="${SITE_URL}/mentions-legales/"`);
     expect(head).toContain('<meta property="og:locale" content="fr_FR" />');
   });
 
@@ -26,7 +26,7 @@ describe("head", () => {
 
   it("adds JSON-LD on the home page only", () => {
     expect(renderHead(RouterEnum.HOME, "en")).toContain("application/ld+json");
-    expect(renderHead(RouterEnum.PRINT, "en")).not.toContain("application/ld+json");
+    expect(renderHead(RouterEnum.LEGAL, "en")).not.toContain("application/ld+json");
   });
 
   it("marks the not found page as noindex without canonical", () => {
@@ -51,7 +51,7 @@ describe("head in preprod mode", () => {
     vi.resetModules();
     const { renderHead: renderPreprodHead } = await import("@/head");
 
-    const head = renderPreprodHead(RouterEnum.SIGNAGE, "en");
+    const head = renderPreprodHead(RouterEnum.LEGAL, "en");
     expect(head).toContain('<meta name="robots" content="noindex" />');
     expect(head).toContain('rel="canonical"');
     expect(head).toContain('hreflang="fr"');

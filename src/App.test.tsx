@@ -1,17 +1,24 @@
-import { StrictMode } from "react";
-import { fireEvent, render, screen, within } from "@testing-library/react";
-import { MemoryRouter } from "react-router";
+import { StrictMode, type ReactNode } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter, useNavigate } from "react-router";
 import { describe, expect, it } from "vitest";
 import App from "./App";
 import { dictionaries } from "./i18n";
 import { getAllRoutes } from "@/router";
 
-function renderAt(path: string) {
+function renderAt(path: string, extra?: ReactNode) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <App />
+      {extra}
     </MemoryRouter>,
   );
+}
+
+// Navigation côté client sans passer par l'interface : l'en-tête est provisoire, il n'a ni menu ni sélecteur de langue.
+function GoTo({ to, children }: { to: string; children: string }) {
+  const navigate = useNavigate();
+  return <button onClick={() => navigate(to)}>{children}</button>;
 }
 
 describe("App", () => {
@@ -19,50 +26,23 @@ describe("App", () => {
     renderAt(path);
     const page = dictionaries[locale].pages[pageId];
 
-    expect(screen.getByRole("heading", { level: 1, name: page.heading })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: "Lorem ipsum" })).toBeDefined();
     expect(document.title).toBe(page.title);
     expect(document.documentElement.lang).toBe(locale);
   });
 
   it("provides a skip link targeting the main landmark", () => {
     renderAt("/");
-    const skipLink = screen.getByRole("link", { name: "Aller au contenu" });
+    const skipLink = screen.getAllByRole("link").find(link => link.getAttribute("href") === "#main");
 
-    expect(skipLink.getAttribute("href")).toBe("#main");
+    expect(skipLink).toBeDefined();
     expect(screen.getByRole("main").id).toBe("main");
-  });
-
-  it("marks the current page in the main navigation", () => {
-    renderAt("/print/");
-    const nav = screen.getByRole("navigation", { name: "Navigation principale" });
-
-    expect(within(nav).getByRole("link", { name: "Print" }).getAttribute("aria-current")).toBe("page");
-    expect(within(nav).getByRole("link", { name: "Accueil" }).getAttribute("aria-current")).toBeNull();
-  });
-
-  it("links the language switcher to the same page in the other language", () => {
-    renderAt("/salons-plv/");
-    const switcher = screen.getByRole("navigation", { name: "Choix de la langue" });
-    const english = within(switcher).getByRole("link", { name: "English" });
-
-    expect(english.getAttribute("href")).toBe("/en/trade-shows/");
-    expect(english.getAttribute("lang")).toBe("en");
-    expect(within(switcher).getByRole("link", { name: "Français" }).getAttribute("aria-current")).toBe("true");
-  });
-
-  it("lists every service on the home page", () => {
-    renderAt("/en/");
-    expect(screen.getAllByRole("heading", { level: 3 }).map(heading => heading.textContent)).toEqual([
-      "Digital",
-      "Print",
-      "Signs & wayfinding",
-      "Trade shows & POS",
-    ]);
   });
 
   it("serves the French home page at the root, without redirect", () => {
     renderAt("/");
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.fr.pages.home.heading })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: "Lorem ipsum" })).toBeDefined();
+    expect(document.title).toBe(dictionaries.fr.pages.home.title);
     expect(document.documentElement.lang).toBe("fr");
   });
 
@@ -79,14 +59,22 @@ describe("App", () => {
   });
 
   it("keeps the same layout when navigating and when switching language", () => {
-    renderAt("/");
+    renderAt(
+      "/",
+      <>
+        <GoTo to="/mentions-legales/">to legal</GoTo>
+        <GoTo to="/en/legal-notice/">to english</GoTo>
+      </>,
+    );
     const header = screen.getByRole("banner");
 
-    fireEvent.click(within(screen.getByRole("navigation", { name: "Navigation principale" })).getByRole("link", { name: "Print" }));
+    fireEvent.click(screen.getByRole("button", { name: "to legal" }));
+    expect(document.title).toBe(dictionaries.fr.pages.legal.title);
     expect(screen.getByRole("banner")).toBe(header);
 
-    fireEvent.click(within(screen.getByRole("navigation", { name: "Choix de la langue" })).getByRole("link", { name: "English" }));
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.en.pages.print.heading })).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "to english" }));
+    expect(document.title).toBe(dictionaries.en.pages.legal.title);
+    expect(document.documentElement.lang).toBe("en");
     expect(screen.getByRole("banner")).toBe(header);
   });
 
@@ -95,14 +83,14 @@ describe("App", () => {
       <StrictMode>
         <MemoryRouter initialEntries={["/"]}>
           <App />
+          <GoTo to="/mentions-legales/">to legal</GoTo>
         </MemoryRouter>
       </StrictMode>,
     );
     expect(document.activeElement).toBe(document.body);
 
-    const nav = screen.getByRole("navigation", { name: "Navigation principale" });
-    fireEvent.click(within(nav).getByRole("link", { name: "Print" }));
+    fireEvent.click(screen.getByRole("button", { name: "to legal" }));
 
-    expect(document.activeElement).toBe(screen.getByRole("heading", { level: 1, name: "Print" }));
+    expect(document.activeElement).toBe(screen.getByRole("heading", { level: 1 }));
   });
 });

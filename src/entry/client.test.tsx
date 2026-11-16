@@ -3,7 +3,6 @@ import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
-import { dictionaries } from "@/i18n";
 
 type ReactDomClient = typeof import("react-dom/client");
 
@@ -76,17 +75,17 @@ afterEach(async () => {
 
 describe("entry/client", () => {
   it("renders the app from scratch when #root is empty (dev server)", async () => {
-    const container = openPage("/numerique/");
+    const container = openPage("/mentions-legales/");
 
     const { createRoot, hydrateRoot } = await runClient();
 
     expect(createRoot).toHaveBeenCalledWith(container);
     expect(hydrateRoot).not.toHaveBeenCalled();
-    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe(dictionaries.fr.pages.digital.heading);
+    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe("Lorem ipsum");
   });
 
   it("hydrates the pre-rendered HTML in place when #root already has content", async () => {
-    const container = openPage("/numerique/", prerendered("/numerique/"));
+    const container = openPage("/mentions-legales/", prerendered("/mentions-legales/"));
     const heading = container.querySelector("h1");
 
     const { createRoot, hydrateRoot } = await runClient();
@@ -99,13 +98,13 @@ describe("entry/client", () => {
   });
 
   it("hydrates an English page without mismatch", async () => {
-    const container = openPage("/en/digital/", prerendered("/en/digital/"));
+    const container = openPage("/en/legal-notice/", prerendered("/en/legal-notice/"));
 
     const { hydrateRoot } = await runClient();
 
     expect(hydrateRoot).toHaveBeenCalledOnce();
     expect(spy.recoverableErrors).toEqual([]);
-    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe(dictionaries.en.pages.digital.heading);
+    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe("Lorem ipsum");
   });
 
   describe("under a base path (GitHub Pages)", () => {
@@ -113,18 +112,26 @@ describe("entry/client", () => {
       vi.stubEnv("BASE_URL", "/Website/");
     });
 
-    it("uses BASE_URL as router basename to pick the page and prefix every internal link", async () => {
-      const container = openPage("/Website/en/digital/");
+    it("uses BASE_URL as router basename to pick the page", async () => {
+      const container = openPage("/Website/en/legal-notice/");
 
       await runClient();
 
-      expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe(dictionaries.en.pages.digital.heading);
+      expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe("Lorem ipsum");
+    });
+
+    it("prefixes every internal link with the base path", async () => {
+      // La page 404 est, pour l'instant, la seule à avoir un lien interne : l'en-tête et le pied de page sont provisoires.
+      const container = openPage("/Website/en/unknown/");
+
+      await runClient();
+
       expect(internalHrefs(container).length).toBeGreaterThan(0);
       expect(internalHrefs(container).every(href => href.startsWith("/Website/"))).toBe(true);
     });
 
     it("hydrates the pre-rendered HTML without mismatch", async () => {
-      const container = openPage("/Website/numerique/", prerendered("/numerique/", "/Website/"));
+      const container = openPage("/Website/mentions-legales/", prerendered("/mentions-legales/", "/Website/"));
       const heading = container.querySelector("h1");
 
       const { createRoot, hydrateRoot } = await runClient();

@@ -4,4 +4,4 @@
 @import "@studio_b04/ds/reset" layer(base);
 
 @import "tailwindcss";
-@import "@studio_b04/ds/tailwind-theme" layer (threme);
+@import "@studio_b04/ds/tailwind-theme" layer (theme);
