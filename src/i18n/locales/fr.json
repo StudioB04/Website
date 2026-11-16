@@ -1,81 +1,21 @@
 {
   "site": {
-    "name": "StudioB04",
-    "tagline": "Studio de création graphique et numérique"
+    "name": "StudioB04"
   },
   "common": {
-    "skipToContent": "Aller au contenu",
-    "mainNavigation": "Navigation principale",
-    "footerNavigation": "Liens de pied de page",
-    "languageSwitcher": "Choix de la langue",
-    "homeLink": "StudioB04 – accueil",
-    "breadcrumb": "Fil d'Ariane",
-    "learnMore": "En savoir plus",
-    "copyright": "© {{year}} StudioB04. Tous droits réservés."
+    "languageSwitcher": "Choix de la langue"
   },
   "pages": {
     "home": {
-      "slug": "",
-      "navLabel": "Accueil",
       "title": "StudioB04 – Studio de création graphique et numérique",
-      "description": "StudioB04 conçoit vos supports numériques, imprimés, enseignes, signalétique et stands de salon.",
-      "heading": "Donnons forme à votre image",
-      "intro": "Du site web à l'enseigne, en passant par l'imprimé et les salons professionnels : un seul studio pour une communication cohérente.",
-      "servicesHeading": "Nos savoir-faire"
-    },
-    "digital": {
-      "slug": "numerique",
-      "navLabel": "Numérique",
-      "title": "Numérique – StudioB04",
-      "description": "Sites web accessibles, applications et contenus numériques conçus par StudioB04.",
-      "heading": "Numérique",
-      "intro": "Sites web, applications et contenus numériques performants, accessibles et bien référencés.",
-      "summary": "Sites web, applications et contenus numériques accessibles."
-    },
-    "print": {
-      "slug": "print",
-      "navLabel": "Print",
-      "title": "Print – StudioB04",
-      "description": "Identité visuelle, brochures, flyers et supports imprimés conçus par StudioB04.",
-      "heading": "Print",
-      "intro": "Identité visuelle, brochures, affiches, cartes de visite : des supports imprimés soignés.",
-      "summary": "Identité visuelle, brochures et supports imprimés."
-    },
-    "signage": {
-      "slug": "enseigne-signaletique",
-      "navLabel": "Enseigne & signalétique",
-      "title": "Enseigne & signalétique – StudioB04",
-      "description": "Enseignes, signalétique intérieure et extérieure, marquage de véhicules par StudioB04.",
-      "heading": "Enseigne & signalétique",
-      "intro": "Enseignes, signalétique intérieure et extérieure, marquage : soyez visibles et faciles à trouver.",
-      "summary": "Enseignes, signalétique et marquage."
-    },
-    "tradeShows": {
-      "slug": "salons-plv",
-      "navLabel": "Salons & PLV",
-      "title": "Salons & PLV – StudioB04",
-      "description": "Stands de salon, kakémonos et publicité sur le lieu de vente conçus par StudioB04.",
-      "heading": "Salons & PLV",
-      "intro": "Stands, kakémonos, présentoirs : des supports qui attirent l'attention sur les salons et en magasin.",
-      "summary": "Stands, kakémonos et publicité sur le lieu de vente."
+      "description": "StudioB04 conçoit vos supports numériques, imprimés, enseignes, signalétique et stands de salon."
     },
     "legal": {
       "slug": "mentions-legales",
-      "navLabel": "Mentions légales",
       "title": "Mentions légales – StudioB04",
-      "description": "Mentions légales du site StudioB04.",
-      "heading": "Mentions légales",
-      "intro": "Informations légales relatives au site et à son éditeur.",
-      "sections": [
-        { "title": "Éditeur du site", "text": "[À compléter : raison sociale, adresse, SIRET, numéro de TVA, directeur de la publication]" },
-        { "title": "Hébergement", "text": "[À compléter : nom et adresse de l'hébergeur]" },
-        { "title": "Propriété intellectuelle", "text": "[À compléter]" },
-        { "title": "Données personnelles", "text": "[À compléter]" }
-      ]
+      "description": "Mentions légales du site StudioB04."
     },
     "notFound": {
-      "slug": "404",
-      "navLabel": "Page introuvable",
       "title": "Page introuvable – StudioB04",
       "description": "La page demandée n'existe pas.",
       "heading": "Page introuvable",

@@ -1,7 +1,21 @@
-@layer base, properties, theme, mozaic, utilities, components;
+@layer base, properties, theme, fonts, utilities, components;
 
 @import "@studio_b04/ds/styles" layer(base);
 @import "@studio_b04/ds/reset" layer(base);
 
-@import "tailwindcss";
-@import "@studio_b04/ds/tailwind-theme" layer (theme);
+@import "tailwindcss" layer(theme);
+@import "@studio_b04/ds/tailwind-theme" layer(theme);
+
+@layer fonts {
+  :root {
+    --ds-font-family-sans: "Red Hat Display", sans-serif;
+  }
+}
+
+:root {
+  container-type: inline-size;
+  container-name: screen;
+  block-size: 100dvh;
+  inline-size: 100dvw;
+  overflow-x: clip;
+}

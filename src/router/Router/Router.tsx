@@ -1,11 +1,10 @@
 import { Route, Routes, useLocation } from "react-router";
 import { type Locale } from "@/i18n";
 import { GlobalLayout } from "@/layouts";
-import { getSlug, RouterEnum, getLocaleFromPath } from "@/router";
-import { ErrorPage, Home, Legal } from "@/pages";
+import { ErrorPage } from "@/pages";
 import { useEffect, useRef } from "react";
 import { getPageMeta } from "@/head";
-import { findPage, type PageId } from "@/router";
+import { findPage, getLocaleFromPath, getPages, getSlug, type PageId } from "@/router";
 import PageErrorBoundary from "../ErrorBoundary/ErrorBoundary";
 
 function useDocumentUpdate(pathname: string, locale: Locale, pageId: PageId | null) {
@@ -24,14 +23,14 @@ function useDocumentUpdate(pathname: string, locale: Locale, pageId: PageId | nu
   }, [pathname, locale, pageId]);
 }
 
-// Les routes d'une langue : les pages sont les mêmes, l'adresse de chacune est traduite dans les JSON (slug).
+// Les routes d'une langue : une par page de `src/pages`, trouvée automatiquement. L'adresse de chacune est traduite dans les JSON
+// (`slug` de chaque dossier) ; l'accueil, sans adresse, est la route `index`. Appelée comme une fonction (un composant autour de
+// `<Route>` serait refusé par React Router).
 function pages(locale: Locale) {
-  return (
-    <>
-      <Route index element={<Home />} />
-      <Route path={getSlug(RouterEnum.LEGAL, locale)} element={<Legal />} />
-    </>
-  );
+  return getPages().map(({ id, Component }) => {
+    const slug = getSlug(id, locale);
+    return slug ? <Route key={id} path={slug} element={<Component />} /> : <Route key={id} index element={<Component />} />;
+  });
 }
 
 export default function Router() {

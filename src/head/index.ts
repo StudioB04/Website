@@ -1,7 +1,7 @@
 import { NOINDEX, SITE_URL } from "@/config";
 import { defaultLocale, locales, translate } from "@/i18n";
 import type { Locale } from "@/i18n";
-import { getAlternates, getPath, RouterEnum } from "@/router";
+import { getAlternates, getPath } from "@/router";
 import type { PageId } from "@/router";
 
 const ogLocales: Record<Locale, string> = { fr: "fr_FR", en: "en_GB" };
@@ -49,7 +49,7 @@ export function renderHead(pageId: PageId | "notFound", locale: Locale): string 
     `<meta property="og:locale" content="${ogLocales[locale]}" />`,
   );
 
-  if (pageId === RouterEnum.HOME) {
+  if (pageId === "home") {
     const jsonLd = {
       "@context": "https://schema.org",
       "@type": "Organization",

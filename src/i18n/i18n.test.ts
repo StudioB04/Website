@@ -2,7 +2,7 @@ import { renderHook } from "@testing-library/react";
 import { createElement } from "react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it } from "vitest";
-import { dictionaries, I18nProvider, isLocale, locales, translate, useI18n } from ".";
+import { dictionaries, findMessage, I18nProvider, isLocale, locales, translate, useI18n } from ".";
 import type { Locale, MessageKey } from ".";
 
 function shape(value: unknown): unknown {
@@ -24,21 +24,29 @@ describe("i18n", () => {
       if (typeof value === "string") strings.push(value);
       else if (value && typeof value === "object") Object.values(value).forEach(collect);
     };
-    collect(dictionaries[locale].common);
+    collect(dictionaries[locale]);
+    expect(strings.length).toBeGreaterThan(0);
     expect(strings.every((value) => value.length > 0)).toBe(true);
   });
 
-  it("uses the same {{placeholders}} in every language and no other syntax", () => {
-    const placeholders = (value: unknown, path = ""): Array<[string, string[]]> => {
-      if (typeof value === "string") return [[path, [...value.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map(([, name]) => name).sort()]];
-      if (value && typeof value === "object") return Object.entries(value).flatMap(([key, child]) => placeholders(child, `${path}.${key}`));
-      return [];
-    };
-    const singleBrace = (value: unknown): boolean => JSON.stringify(value).split('"').some(text => /(?<!\{)\{\w+\}(?!\})/.test(text));
+  // Aucun texte n'a de paramètre pour l'instant (la syntaxe est testée dans `translate`) : ces contrôles gardent l'avenir.
+  const placeholders = (value: unknown, path = ""): Array<[string, string[]]> => {
+    if (typeof value === "string") return [[path, [...value.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map(([, name]) => name).sort()]];
+    if (value && typeof value === "object") return Object.entries(value).flatMap(([key, child]) => placeholders(child, `${path}.${key}`));
+    return [];
+  };
+  const singleBrace = (value: unknown): boolean => JSON.stringify(value).split('"').some(text => /(?<!\{)\{\w+\}(?!\})/.test(text));
 
+  it("uses the same {{placeholders}} in every language and no other syntax", () => {
     expect(placeholders(dictionaries.en)).toEqual(placeholders(dictionaries.fr));
-    expect(placeholders(dictionaries.fr).some(([, names]) => names.length > 0)).toBe(true);
     expect(locales.some(locale => singleBrace(dictionaries[locale]))).toBe(false);
+  });
+
+  it("detects a placeholder that differs between languages, and a single-brace parameter", () => {
+    expect(placeholders({ a: { b: "x {{year}} y {{ name }}" } })).toEqual([[".a.b", ["name", "year"]]]);
+    expect(placeholders({ a: "{{year}}" })).not.toEqual(placeholders({ a: "{{annee}}" }));
+    expect(singleBrace({ a: "x {year}" })).toBe(true);
+    expect(singleBrace({ a: "x {{year}}" })).toBe(false);
   });
 
   it("recognises supported locales", () => {
@@ -49,53 +57,90 @@ describe("i18n", () => {
   });
 });
 
+// Aucun texte du site n'a de paramètre ni n'est vide : ces cas se testent en remplaçant un texte le temps du test.
+const sample = dictionaries.fr.pages.notFound;
+const originalIntro = sample.intro;
+
+afterEach(() => {
+  sample.intro = originalIntro;
+  delete (sample as Record<string, unknown>).list;
+});
+
 describe("translate", () => {
-  const original = dictionaries.fr.common.copyright;
-
-  afterEach(() => {
-    dictionaries.fr.common.copyright = original;
-  });
-
   it("reads a text by its dotted key, in the requested language", () => {
-    expect(translate("fr", "pages.digital.heading")).toBe(dictionaries.fr.pages.digital.heading);
-    expect(translate("en", "pages.digital.heading")).toBe(dictionaries.en.pages.digital.heading);
+    expect(translate("fr", "pages.notFound.heading")).toBe(dictionaries.fr.pages.notFound.heading);
+    expect(translate("en", "pages.notFound.heading")).toBe(dictionaries.en.pages.notFound.heading);
     expect(translate("en", "site.name")).toBe(dictionaries.en.site.name);
   });
 
   it("replaces {{param}} with its value", () => {
-    expect(translate("fr", "common.copyright", { year: 2026 })).toBe("© 2026 StudioB04. Tous droits réservés.");
-    expect(translate("en", "common.copyright", { year: "2026" })).toBe("© 2026 StudioB04. All rights reserved.");
+    sample.intro = "© {{year}} StudioB04.";
+
+    expect(translate("fr", "pages.notFound.intro", { year: 2026 })).toBe("© 2026 StudioB04.");
+    expect(translate("fr", "pages.notFound.intro", { year: "2026" })).toBe("© 2026 StudioB04.");
   });
 
   it("handles repeated, spaced and numeric params, and keeps the ones it has no value for", () => {
-    dictionaries.fr.common.copyright = "lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}";
+    sample.intro = "lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}";
 
-    expect(translate("fr", "common.copyright", { a: "A", b: 2, zero: 0 })).toBe("lorem A ipsum A 2 {{missing}} 0");
-    expect(translate("fr", "common.copyright")).toBe("lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}");
+    expect(translate("fr", "pages.notFound.intro", { a: "A", b: 2, zero: 0 })).toBe("lorem A ipsum A 2 {{missing}} 0");
+    expect(translate("fr", "pages.notFound.intro")).toBe("lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}");
   });
 
   it("does not interpret the value of a param", () => {
-    dictionaries.fr.common.copyright = "{{a}}";
+    sample.intro = "{{a}}";
 
-    expect(translate("fr", "common.copyright", { a: "{{b}} $& $1", b: "x" })).toBe("{{b}} $& $1");
+    expect(translate("fr", "pages.notFound.intro", { a: "{{b}} $& $1", b: "x" })).toBe("{{b}} $& $1");
   });
 
   it("returns an empty text as is, not the key", () => {
-    expect(translate("fr", "pages.home.slug")).toBe("");
+    sample.intro = "";
+
+    expect(translate("fr", "pages.notFound.intro")).toBe("");
   });
 
   it("returns the key itself when the text does not exist", () => {
     // @ts-expect-error la clé n'existe pas : TypeScript la refuse, et au besoin t renvoie la clé
-    expect(translate("fr", "pages.digital.nope")).toBe("pages.digital.nope");
+    expect(translate("fr", "pages.notFound.nope")).toBe("pages.notFound.nope");
     // @ts-expect-error un bloc n'est pas un texte
     expect(translate("fr", "pages")).toBe("pages");
-    // @ts-expect-error une liste n'a pas de clé : elle se lit par `messages`
-    expect(translate("fr", "pages.legal.sections")).toBe("pages.legal.sections");
+  });
+
+  it("does not read a list as a text: it is read through `messages`", () => {
+    (sample as Record<string, unknown>).list = [{ title: "a", text: "b" }];
+
+    expect(translate("fr", "pages.notFound.list" as MessageKey)).toBe("pages.notFound.list");
   });
 
   it("never reads inherited properties", () => {
     expect(translate("fr", "constructor" as MessageKey)).toBe("constructor");
     expect(translate("fr", "pages.__proto__.toString" as MessageKey)).toBe("pages.__proto__.toString");
+  });
+});
+
+describe("findMessage", () => {
+  it("reads any text by its dotted path, in the given locale", () => {
+    expect(findMessage("fr", "pages.legal.slug")).toBe(dictionaries.fr.pages.legal.slug);
+    expect(findMessage("en", "pages.legal.slug")).toBe(dictionaries.en.pages.legal.slug);
+  });
+
+  it("returns an empty text as is", () => {
+    sample.intro = "";
+
+    expect(findMessage("fr", "pages.notFound.intro")).toBe("");
+  });
+
+  it("returns undefined, not the key, when there is no text", () => {
+    (sample as Record<string, unknown>).list = [{ title: "a", text: "b" }];
+
+    expect(findMessage("fr", "pages.nope.slug")).toBeUndefined();
+    expect(findMessage("fr", "pages")).toBeUndefined();
+    expect(findMessage("fr", "pages.notFound.list")).toBeUndefined();
+  });
+
+  it("never reads inherited properties", () => {
+    expect(findMessage("fr", "constructor")).toBeUndefined();
+    expect(findMessage("fr", "pages.__proto__.toString")).toBeUndefined();
   });
 });
 
@@ -107,8 +152,7 @@ describe("useI18n", () => {
 
     expect(result.current.locale).toBe(locale);
     expect(result.current.messages).toBe(dictionaries[locale]);
-    expect(result.current.t("common.skipToContent")).toBe(dictionaries[locale].common.skipToContent);
-    expect(result.current.t("common.copyright", { year: 2026 })).toBe(translate(locale, "common.copyright", { year: 2026 }));
+    expect(result.current.t("pages.notFound.heading")).toBe(dictionaries[locale].pages.notFound.heading);
   });
 
   it("falls back to the default locale outside a provider", () => {

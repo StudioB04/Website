@@ -6,8 +6,8 @@ import en from "./locales/en.json";
 
 export type Messages = typeof fr;
 
-// Clés de traduction : chemins pointés vers un texte du dictionnaire (`pages.digital.heading`).
-// Les listes (`pages.legal.sections`) n'ont pas de clé : elles se lisent par `messages`.
+// Clés de traduction : chemins pointés vers un texte du dictionnaire (`pages.notFound.heading`).
+// Les listes n'ont pas de clé : elles se lisent par `messages`.
 type TextPaths<T, Prefix extends string = ""> = {
   [K in keyof T & string]: T[K] extends string
     ? `${Prefix}${K}`
@@ -43,6 +43,14 @@ function findText(messages: Messages, key: string): string | undefined {
     value = (value as Record<string, unknown>)[part];
   }
   return typeof value === "string" ? value : undefined;
+}
+
+/**
+ * Le texte d'une clé non typée, ou `undefined` s'il n'existe pas (contrairement à `translate`, qui renvoie la clé).
+ * Pour les clés construites à l'exécution, comme le `slug` d'une page (`pages.print.global.slug`).
+ */
+export function findMessage(locale: Locale, key: string): string | undefined {
+  return findText(dictionaries[locale], key);
 }
 
 // `{{param}}` est remplacé par la valeur de `params.param` ; un marqueur sans valeur reste tel quel.

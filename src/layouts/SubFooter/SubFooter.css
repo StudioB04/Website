@@ -1,0 +1,6 @@
+.sub-footer {
+  text-align: center;
+  background-color: var(--ds-bg-primary);
+  font-size: var(--ds-font-size-text-xs);
+  font-weight: var(--ds-font-weight-medium);
+}

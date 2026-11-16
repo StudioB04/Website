@@ -1,0 +1,60 @@
+@reference "@/styles/global.css";
+
+.header {
+  @apply container;
+
+  --header-logo-size: 4rem;
+
+  position: relative;
+  margin-inline: auto;
+  z-index: 2;
+  display: flex;
+  padding-block: var(--spacing-lg);
+  justify-content: space-between;
+  padding-inline-start: var(--header-logo-size);
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.header__logo {
+  position: absolute;
+  inline-size: var(--header-logo-size);
+  block-size: var(--header-logo-size);
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  transform: rotate(-3deg);
+  box-shadow: var(--ds-box-shadow-xl);
+  border-radius: var(--ds-radius-xs);
+
+  svg {
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: inherit;
+  }
+}
+
+.header__nav {
+  display: flex;
+  gap: var(--spacing-xl);
+  justify-content: center;
+  align-items: center;
+  font-size: var(--ds-font-size-text-lg);
+  font-weight: var(--ds-font-weight-bold);
+}
+
+.header__button {
+}
+
+/* md */
+@media screen and (width > 61.25rem) {
+  .header {
+    --header-logo-size: 5rem;
+  }
+}
+
+/* lg */
+@media screen and (width > 75rem) {
+  .header {
+    --header-logo-size: 6rem;
+  }
+}

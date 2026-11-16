@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SITE_URL } from "@/config";
 import { escapeHtml, renderHead } from "@/head";
-import { RouterEnum } from "@/router";
 
 describe("head", () => {
   it("escapes HTML special characters", () => {
@@ -9,7 +8,7 @@ describe("head", () => {
   });
 
   it("renders title, description, canonical and hreflang links", () => {
-    const head = renderHead(RouterEnum.LEGAL, "fr");
+    const head = renderHead("legal", "fr");
     expect(head).toContain("<title>Mentions légales – StudioB04</title>");
     expect(head).toContain('<meta name="description"');
     expect(head).toContain(`<link rel="canonical" href="${SITE_URL}/mentions-legales/" />`);
@@ -20,13 +19,13 @@ describe("head", () => {
   });
 
   it("uses the site root as canonical for the French home page and /en/ for the English one", () => {
-    expect(renderHead(RouterEnum.HOME, "fr")).toContain(`<link rel="canonical" href="${SITE_URL}/" />`);
-    expect(renderHead(RouterEnum.HOME, "en")).toContain(`<link rel="canonical" href="${SITE_URL}/en/" />`);
+    expect(renderHead("home", "fr")).toContain(`<link rel="canonical" href="${SITE_URL}/" />`);
+    expect(renderHead("home", "en")).toContain(`<link rel="canonical" href="${SITE_URL}/en/" />`);
   });
 
   it("adds JSON-LD on the home page only", () => {
-    expect(renderHead(RouterEnum.HOME, "en")).toContain("application/ld+json");
-    expect(renderHead(RouterEnum.LEGAL, "en")).not.toContain("application/ld+json");
+    expect(renderHead("home", "en")).toContain("application/ld+json");
+    expect(renderHead("legal", "en")).not.toContain("application/ld+json");
   });
 
   it("marks the not found page as noindex without canonical", () => {
@@ -36,7 +35,7 @@ describe("head", () => {
   });
 
   it("does not add noindex on regular pages by default", () => {
-    expect(renderHead(RouterEnum.HOME, "fr")).not.toContain("noindex");
+    expect(renderHead("home", "fr")).not.toContain("noindex");
   });
 });
 
@@ -51,7 +50,7 @@ describe("head in preprod mode", () => {
     vi.resetModules();
     const { renderHead: renderPreprodHead } = await import("@/head");
 
-    const head = renderPreprodHead(RouterEnum.LEGAL, "en");
+    const head = renderPreprodHead("legal", "en");
     expect(head).toContain('<meta name="robots" content="noindex" />');
     expect(head).toContain('rel="canonical"');
     expect(head).toContain('hreflang="fr"');

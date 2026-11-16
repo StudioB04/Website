@@ -3,5 +3,6 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "js/ts.tsdk.promptToUseWorkspaceVersion": true
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "css.lint.unknownAtRules": "ignore"
 }

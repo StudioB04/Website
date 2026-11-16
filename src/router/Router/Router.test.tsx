@@ -4,16 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
 import { dictionaries } from "@/i18n";
 
-// La page d'accueil plante ; les autres pages sont celles du site.
-vi.mock("@/pages", async importOriginal => {
-  const actual = await importOriginal<typeof import("@/pages")>();
-  return {
-    ...actual,
-    Home: () => {
-      throw new Error("boom");
-    },
-  };
-});
+// La page d'accueil plante ; les autres pages sont celles du site (le routeur les trouve dans `src/pages`, le mock vise le fichier).
+vi.mock("@/pages/Home/Home", () => ({
+  default: () => {
+    throw new Error("boom");
+  },
+}));
 
 function renderAt(path: string) {
   return render(

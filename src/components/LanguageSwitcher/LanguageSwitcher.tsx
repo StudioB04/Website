@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { localeNames, locales, useI18n } from "@/i18n";
-import { getAlternates, getPath, RouterEnum } from "@/router";
+import { getAlternates, getPath } from "@/router";
 import type { PageId } from "@/router";
 
 export default function LanguageSwitcher({ pageId }: { pageId: PageId | null }) {
@@ -13,7 +13,7 @@ export default function LanguageSwitcher({ pageId }: { pageId: PageId | null }) 
         {locales.map(alt => (
           <li key={alt}>
             <Link
-              to={alternates ? alternates[alt] : getPath(RouterEnum.HOME, alt)}
+              to={alternates ? alternates[alt] : getPath("home", alt)}
               lang={alt}
               hrefLang={alt}
               aria-current={alt === locale ? "true" : undefined}

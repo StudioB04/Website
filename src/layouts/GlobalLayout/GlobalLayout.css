@@ -1,45 +1,103 @@
+@reference "@/styles/global.css";
+
 .global-layout {
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: var(--ds-spacing-lg);
-  padding: var(--ds-spacing-lg);
+  gap: var(--ds-spacing-sm);
+  padding-inline: var(--ds-spacing-lg);
+  padding-block: var(--ds-spacing-sm);
   background: var(--ds-bg-primary);
   block-size: 100dvh;
   min-block-size: 100dvh;
   max-block-size: 100dvh;
+  inline-size: 100dvw;
+  min-inline-size: 100dvw;
+  max-inline-size: 100dvw;
+}
+
+@keyframes fade-out-dots {
+  to {
+    opacity: 0;
+  }
 }
 
 .global-layout__inner {
+  scroll-timeline: --main-timeline;
+  container-type: size;
   position: relative;
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: var(--ds-spacing-lg);
-  background: var(--ds-bg-secondary);
-  border-radius: var(--ds-radius-2xl);
+  background-image: linear-gradient(to bottom, var(--ds-bg-secondary), var(--ds-bg-primary));
+  padding: var(--ds-spacing-md);
+  border-radius: var(--ds-radius-lg);
   border: var(--ds-border-primary-1px);
   box-shadow:
-    inset 0 var(--ds-size-20px) var(--ds-size-20px) calc(-1 * var(--ds-size-10px)) rgba(0 0 0 / 15%),
-    inset 0 calc(-1 * var(--ds-size-20px)) var(--ds-size-20px) calc(-1 * var(--ds-size-10px)) rgba(0 0 0 / 15%);
+    inset 0 var(--ds-size-20px) var(--ds-size-20px) calc(-1 * var(--ds-size-10px)) rgba(0 0 0 / 5%),
+    inset 0 calc(-1 * var(--ds-size-20px)) var(--ds-size-20px) calc(-1 * var(--ds-size-10px)) rgba(0 0 0 / 5%);
   z-index: 1;
   overflow: auto;
   scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
+  overflow-x: clip;
 
   .global-layout__inner__main {
     flex-grow: 1;
+    margin-inline: auto;
+    padding-block-start: var(--ds-spacing-7xl);
+
+    @apply container;
   }
 
   &::before {
+    --dot-size: var(--ds-size-1px);
+    --dot-gap: var(--ds-size-8px);
+    --dot: radial-gradient(circle, var(--ds-text-placeholder) var(--dot-size), transparent var(--dot-size));
+    --fade-distance: 500px;
+
     content: "";
-    position: absolute;
-    inset: 1rem;
+    position: sticky;
+    top: 0;
+    flex: none;
+    inline-size: calc(100% + 2 * var(--ds-spacing-lg));
+    block-size: calc(100cqh + 2 * var(--ds-spacing-lg));
+    margin: calc(-1 * var(--ds-spacing-lg)) calc(-1 * var(--ds-spacing-lg)) calc(-100cqh - var(--ds-spacing-lg));
     z-index: -1;
-    background-position: center center;
-    background-size: var(--ds-size-12px) var(--ds-size-12px);
-    background-image: radial-gradient(circle, var(--ds-text-placeholder) var(--ds-size-1px), transparent var(--ds-size-1px));
+    background-image: var(--dot), var(--dot);
+    background-size: var(--dot-gap) calc(var(--dot-gap) * 2);
+    background-position:
+      0 0,
+      calc(var(--dot-gap) / 2) var(--dot-gap);
     mask-image: radial-gradient(circle, black 0%, transparent 100%);
-    opacity: 0.5;
+    opacity: 0.35;
+
+    @supports (animation-timeline: scroll()) {
+      animation: fade-out-dots linear both;
+      animation-timeline: --main-timeline;
+      animation-range: 0 var(--fade-distance);
+    }
+  }
+}
+
+/* sm */
+@media screen and (width > 37.5rem) {
+  .global-layout__inner {
+    padding: var(--ds-spacing-lg);
+    border-radius: var(--ds-radius-xl);
+  }
+}
+
+/* md */
+@media screen and (width > 61.25rem) {
+  .global-layout__inner {
+    padding: var(--ds-spacing-xl);
+    border-radius: var(--ds-radius-2xl);
+  }
+}
+
+/* lg */
+@media screen and (width > 75rem) {
+  .global-layout__inner {
+    padding: var(--ds-spacing-2xl);
+    border-radius: var(--ds-radius-3xl);
   }
 }

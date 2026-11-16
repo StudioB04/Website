@@ -1,81 +1,21 @@
 {
   "site": {
-    "name": "StudioB04",
-    "tagline": "Graphic and digital design studio"
+    "name": "StudioB04"
   },
   "common": {
-    "skipToContent": "Skip to content",
-    "mainNavigation": "Main navigation",
-    "footerNavigation": "Footer links",
-    "languageSwitcher": "Language selection",
-    "homeLink": "StudioB04 – home",
-    "breadcrumb": "Breadcrumb",
-    "learnMore": "Learn more",
-    "copyright": "© {{year}} StudioB04. All rights reserved."
+    "languageSwitcher": "Language selection"
   },
   "pages": {
     "home": {
-      "slug": "",
-      "navLabel": "Home",
       "title": "StudioB04 – Graphic and digital design studio",
-      "description": "StudioB04 designs your digital and print media, signs, wayfinding and trade show stands.",
-      "heading": "Let's shape your image",
-      "intro": "From websites to shop signs, print and trade shows: one studio for consistent communication.",
-      "servicesHeading": "What we do"
-    },
-    "digital": {
-      "slug": "digital",
-      "navLabel": "Digital",
-      "title": "Digital – StudioB04",
-      "description": "Accessible websites, applications and digital content designed by StudioB04.",
-      "heading": "Digital",
-      "intro": "Fast, accessible and search-friendly websites, applications and digital content.",
-      "summary": "Accessible websites, applications and digital content."
-    },
-    "print": {
-      "slug": "print",
-      "navLabel": "Print",
-      "title": "Print – StudioB04",
-      "description": "Visual identity, brochures, flyers and printed media designed by StudioB04.",
-      "heading": "Print",
-      "intro": "Visual identity, brochures, posters, business cards: carefully crafted printed media.",
-      "summary": "Visual identity, brochures and printed media."
-    },
-    "signage": {
-      "slug": "signage",
-      "navLabel": "Signs & wayfinding",
-      "title": "Signs & wayfinding – StudioB04",
-      "description": "Shop signs, indoor and outdoor wayfinding and vehicle graphics by StudioB04.",
-      "heading": "Signs & wayfinding",
-      "intro": "Shop signs, indoor and outdoor wayfinding, vehicle graphics: be seen and easy to find.",
-      "summary": "Shop signs, wayfinding and vehicle graphics."
-    },
-    "tradeShows": {
-      "slug": "trade-shows",
-      "navLabel": "Trade shows & POS",
-      "title": "Trade shows & POS – StudioB04",
-      "description": "Trade show stands, roll-up banners and point-of-sale displays designed by StudioB04.",
-      "heading": "Trade shows & POS",
-      "intro": "Stands, roll-up banners, displays: media that catch the eye at trade shows and in stores.",
-      "summary": "Stands, roll-up banners and point-of-sale displays."
+      "description": "StudioB04 designs your digital and print media, signs, wayfinding and trade show stands."
     },
     "legal": {
       "slug": "legal-notice",
-      "navLabel": "Legal notice",
       "title": "Legal notice – StudioB04",
-      "description": "Legal notice of the StudioB04 website.",
-      "heading": "Legal notice",
-      "intro": "Legal information about this website and its publisher.",
-      "sections": [
-        { "title": "Publisher", "text": "[To be completed: company name, address, SIRET, VAT number, publication director]" },
-        { "title": "Hosting", "text": "[To be completed: host name and address]" },
-        { "title": "Intellectual property", "text": "[To be completed]" },
-        { "title": "Personal data", "text": "[To be completed]" }
-      ]
+      "description": "Legal notice of the StudioB04 website."
     },
     "notFound": {
-      "slug": "404",
-      "navLabel": "Page not found",
       "title": "Page not found – StudioB04",
       "description": "The requested page does not exist.",
       "heading": "Page not found",

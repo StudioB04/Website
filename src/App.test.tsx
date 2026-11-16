@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router";
 import { describe, expect, it } from "vitest";
 import App from "./App";
-import { dictionaries } from "./i18n";
+import { dictionaries, translate, type MessageKey } from "./i18n";
 import { getAllRoutes } from "@/router";
 
 function renderAt(path: string, extra?: ReactNode) {
@@ -24,10 +24,9 @@ function GoTo({ to, children }: { to: string; children: string }) {
 describe("App", () => {
   it.each(getAllRoutes())("renders $path with its heading, title and lang", ({ path, pageId, locale }) => {
     renderAt(path);
-    const page = dictionaries[locale].pages[pageId];
 
     expect(screen.getByRole("heading", { level: 1, name: "Lorem ipsum" })).toBeDefined();
-    expect(document.title).toBe(page.title);
+    expect(document.title).toBe(translate(locale, `pages.${pageId}.title` as MessageKey));
     expect(document.documentElement.lang).toBe(locale);
   });
 

@@ -1,0 +1,35 @@
+@reference "@/styles/global.css";
+
+.footer {
+  @apply container;
+
+  margin-inline: auto;
+  background-color: var(--ds-bg-tertiary);
+  margin-block-start: var(--ds-spacing-3xl);
+  border-radius: inherit;
+  min-block-size: 10rem;
+}
+
+/* sm */
+@media screen and (width > 37.5rem) {
+  .footer {
+    padding: var(--ds-spacing-lg);
+    border-radius: var(--ds-radius-md);
+  }
+}
+
+/* md */
+@media screen and (width > 61.25rem) {
+  .footer {
+    padding: var(--ds-spacing-xl);
+    border-radius: var(--ds-radius-lg);
+  }
+}
+
+/* lg */
+@media screen and (width > 75rem) {
+  .footer {
+    padding: var(--ds-spacing-2xl);
+    border-radius: var(--ds-radius-xl);
+  }
+}

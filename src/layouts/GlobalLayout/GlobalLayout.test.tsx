@@ -2,14 +2,13 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { Link, MemoryRouter, Route, Routes } from "react-router";
 import { describe, expect, it } from "vitest";
 import GlobalLayout from "./GlobalLayout";
-import type { GlobalLayoutProps } from "./GlobalLayout.types";
 
 /** Affiche le layout comme route de layout : la page "/" contient un lien vers la page "/b". */
-function renderLayout(props: GlobalLayoutProps = {}) {
+function renderLayout() {
   return render(
     <MemoryRouter initialEntries={["/"]}>
       <Routes>
-        <Route element={<GlobalLayout {...props} />}>
+        <Route element={<GlobalLayout />}>
           <Route path="/" element={<Link to="/b">Go to B</Link>} />
           <Route path="/b" element={<p>Page B</p>} />
         </Route>
@@ -31,20 +30,11 @@ function precedes(first: Element, second: Element) {
   return Boolean(first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING);
 }
 
-const optionalParts = [
-  { prop: "header", target: "#header" },
-  { prop: "footer", target: "#footer" },
-  { prop: "subfooter", target: "#subfooter" },
-] as const;
-
-/** Toutes les ancres, dans l'ordre de la page ; `main` est toujours affiché. */
+/** Toutes les ancres, dans l'ordre de la page. */
 const allTargets = ["#header", "#main", "#footer", "#subfooter"];
 
-const booleans = [true, false];
-const combinations = booleans.flatMap(header => booleans.flatMap(footer => booleans.map(subfooter => ({ header, footer, subfooter }))));
-
 describe("GlobalLayout", () => {
-  it("renders the header, the main content, the footer and the subfooter by default", () => {
+  it("renders the header, the main content, the footer and the subfooter", () => {
     renderLayout();
 
     expect(screen.getByRole("banner").id).toBe("header");
@@ -88,34 +78,19 @@ describe("GlobalLayout", () => {
       }
     });
 
-    it.each(optionalParts)("removes the $prop and its link when $prop is false, and keeps the other parts", ({ prop, target }) => {
-      renderLayout({ [prop]: false });
+    it("points every link to exactly one element", () => {
+      renderLayout();
 
-      expect(document.querySelector(target)).toBeNull();
-      expect(skipLinkTargets()).toEqual(allTargets.filter(anchor => anchor !== target));
-      for (const other of optionalParts.filter(part => part.target !== target)) {
-        expect(document.querySelector(other.target)).not.toBeNull();
-      }
-      expect(document.getElementById("main")).not.toBeNull();
-    });
-
-    it("always keeps main and its link, even without header, footer and subfooter", () => {
-      renderLayout({ header: false, footer: false, subfooter: false });
-
-      expect(skipLinkTargets()).toEqual(["#main"]);
-      expect(screen.getByRole("main").id).toBe("main");
-      expect(screen.queryByRole("banner")).toBeNull();
-      expect(screen.queryByRole("contentinfo")).toBeNull();
-      expect(document.getElementById("subfooter")).toBeNull();
-    });
-
-    it.each(combinations)("points every link to exactly one element (header: $header, footer: $footer, subfooter: $subfooter)", props => {
-      renderLayout(props);
-      const targets = skipLinkTargets();
-
-      expect(targets).toHaveLength(1 + [props.header, props.footer, props.subfooter].filter(Boolean).length);
-      for (const target of targets) {
+      for (const target of skipLinkTargets()) {
         expect(document.querySelectorAll(target as string)).toHaveLength(1);
+      }
+    });
+
+    it("gives every link a text, so a screen reader can announce it", () => {
+      renderLayout();
+
+      for (const link of skipLinks()) {
+        expect(link.textContent?.trim()).not.toBe("");
       }
     });
   });
