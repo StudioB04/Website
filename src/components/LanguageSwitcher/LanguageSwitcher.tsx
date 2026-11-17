@@ -1,9 +1,8 @@
 import { Link } from "react-router";
 import { localeNames, locales, useI18n } from "@/i18n";
 import { getAlternates, getPath } from "@/router";
-import type { PageId } from "@/router";
 
-export default function LanguageSwitcher({ pageId }: { pageId: PageId | null }) {
+export default function LanguageSwitcher({ pageId }: { pageId: string | null }) {
   const { locale, t } = useI18n();
   const alternates = pageId ? getAlternates(pageId) : null;
 
