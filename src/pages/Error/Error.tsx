@@ -18,7 +18,7 @@ export default function ErrorPage({ status = 404 }: { status?: ErrorStatus }) {
 
       <p className="text-xl text-secondary">{t(`pages.${key}.intro`)}</p>
 
-      <AppLink to={getPath("home", locale)} label={t(`pages.${key}.backHome`)} />
+      <AppLink to={getPath("home", locale)} label={t("common.back-to-home")} />
     </section>
   );
 }

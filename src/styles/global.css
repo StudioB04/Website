@@ -13,9 +13,16 @@
 }
 
 :root {
+  font-size: 16px;
+  background-color: var(--ds-bg-tertiary);
+}
+
+#root {
   container-type: inline-size;
   container-name: screen;
-  block-size: 100dvh;
+  min-block-size: 100dvh;
   inline-size: 100dvw;
+  max-inline-size: 1920px;
+  margin-inline: auto;
   overflow-x: clip;
 }

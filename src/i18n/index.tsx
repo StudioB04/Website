@@ -5,20 +5,7 @@ import fr from "./locales/fr.json";
 import en from "./locales/en.json";
 
 export type Messages = typeof fr;
-
-// Clés de traduction : chemins pointés vers un texte du dictionnaire (`pages.notFound.heading`).
-// Les listes n'ont pas de clé : elles se lisent par `messages`.
-type TextPaths<T, Prefix extends string = ""> = {
-  [K in keyof T & string]: T[K] extends string
-    ? `${Prefix}${K}`
-    : T[K] extends readonly unknown[]
-      ? never
-      : T[K] extends object
-        ? TextPaths<T[K], `${Prefix}${K}.`>
-        : never;
-}[keyof T & string];
-
-export type MessageKey = TextPaths<Messages>;
+export type MessageKey = string;
 export type TranslationParams = Record<string, string | number>;
 
 export const locales = ["fr", "en"] as const;

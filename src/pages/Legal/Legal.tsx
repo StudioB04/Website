@@ -1,13 +1,12 @@
+import { useI18n } from "@/i18n";
+
 export default function Legal() {
+  const { t } = useI18n();
+
   return (
     <>
-      <h1 tabIndex={-1} className="text-title-xl leading-title-xl font-semibold">
-        Lorem ipsum
-      </h1>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste est, accusantium ut ullam, adipisci cumque voluptatum dolorum sequi totam laudantium,
-        eligendi reprehenderit vitae? Quod provident laudantium, veniam, beatae maxime voluptate odio praesentium delectus nam consequuntur sit repudiandae.
-      </p>
+      <h1 className="text-title-xl leading-title-xl font-semibold">{t("pages.legal.title")}</h1>
+      <p>{t("pages.legal.description")}</p>
     </>
   );
 }

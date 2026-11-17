@@ -1,0 +1,164 @@
+@reference "@/styles/global.css";
+
+@keyframes shrink-header {
+  from {
+    block-size: var(--main-layout-header-size-max);
+    margin-block-end: 0;
+    border-color: transparent;
+    transform: skewY(0);
+  }
+  to {
+    block-size: var(--main-layout-header-size-min);
+    margin-block-end: var(--main-layout-header-size-diff);
+    border-color: var(--ds-border-primary);
+    box-shadow: 0 var(--ds-size-20px) var(--ds-size-20px) calc(-1 * var(--ds-size-10px)) rgba(0 0 0 / 15%);
+    transform: skewY(var(--main-layout-skew-angle));
+  }
+}
+
+@keyframes parallax-dots {
+  to {
+    opacity: 0;
+    background-position:
+      0 calc(-1 * var(--parallax-ratio) * var(--fade-distance)),
+      calc(var(--dot-gap) / 2) calc(var(--dot-gap) - var(--parallax-ratio) * var(--fade-distance));
+  }
+}
+
+.main-layout {
+  --main-layout-header-size-max: 4rem;
+  --main-layout-header-size-min: 3rem;
+  --main-layout-skew-angle: 0;
+  --main-layout-vertical-padding: var(--ds-spacing-xl);
+  --main-layout-horizontal-padding: var(--ds-spacing-lg);
+  --main-layout-border-radius: var(--ds-radius-lg);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-inline: var(--main-layout-horizontal-padding);
+  min-block-size: 100dvh;
+  margin-inline: auto;
+  background-color: var(--ds-bg-primary);
+
+  @media screen and (width > 37.5rem) {
+    --main-layout-header-size-max: 5rem;
+    --main-layout-header-size-min: 3rem;
+    --main-layout-skew-angle: -0.2deg;
+    --main-layout-vertical-padding: var(--ds-spacing-2xl);
+    --main-layout-horizontal-padding: var(--ds-spacing-xl);
+    --main-layout-border-radius: var(--ds-radius-xl);
+  }
+
+  /* md */
+  @media screen and (width > 61.25rem) {
+    --main-layout-header-size-max: 6rem;
+    --main-layout-header-size-min: 3.5rem;
+    --main-layout-skew-angle: -0.35deg;
+    --main-layout-vertical-padding: var(--ds-spacing-xl);
+    --main-layout-horizontal-padding: var(--ds-spacing-2xl);
+    --main-layout-border-radius: var(--ds-radius-2xl);
+  }
+
+  /* lg */
+  @media screen and (width > 75rem) {
+    --main-layout-header-size-max: 7rem;
+    --main-layout-header-size-min: 4rem;
+    --main-layout-skew-angle: -0.5deg;
+    --main-layout-vertical-padding: var(--ds-spacing-6xl);
+    --main-layout-horizontal-padding: var(--ds-spacing-3xl);
+    --main-layout-border-radius: var(--ds-radius-3xl);
+  }
+}
+
+.main-layout__header {
+  --main-layout-header-size-diff: calc(var(--main-layout-header-size-max) - var(--main-layout-header-size-min));
+
+  container-name: header;
+  container-type: inline-size;
+  flex-shrink: 0;
+  position: sticky;
+  inset-block-start: 0;
+  display: flex;
+  align-items: center;
+  block-size: var(--main-layout-header-size-max);
+  background-color: var(--ds-bg-primary);
+  margin-inline: calc(-1 * var(--main-layout-horizontal-padding));
+  padding-inline: var(--main-layout-horizontal-padding);
+  border-block-end: var(--ds-border-primary-1px);
+  z-index: 2;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: -100%;
+    block-size: 100%;
+    background-color: var(--ds-bg-primary);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    animation: shrink-header linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 var(--main-layout-header-size-diff);
+  }
+}
+
+.main-layout__inner {
+  container-name: main;
+  container-type: inline-size;
+  position: relative;
+  flex-grow: 1;
+  background-image: linear-gradient(to bottom, var(--ds-bg-secondary), var(--ds-bg-primary));
+  padding-block: var(--main-layout-vertical-padding);
+  padding-inline: var(--main-layout-horizontal-padding);
+  border-radius: var(--main-layout-border-radius);
+  border: var(--ds-border-primary-1px);
+  min-block-size: calc(100cqh - var(--header-height) - var(--main-layout-vertical-padding));
+  box-shadow:
+    inset 0 var(--ds-size-20px) var(--ds-size-20px) calc(-1 * var(--ds-size-5px)) rgba(0 0 0 / 5%),
+    inset 0 calc(-1 * var(--ds-size-20px)) var(--ds-size-20px) calc(-1 * var(--ds-size-5px)) rgba(0 0 0 / 5%);
+  z-index: 1;
+  overflow: clip;
+
+  &::before {
+    --dot-size: var(--ds-size-1px);
+    --dot-gap: var(--ds-size-8px);
+    --dot: radial-gradient(circle, var(--ds-text-placeholder) var(--dot-size), transparent var(--dot-size));
+    --fade-distance: 350px;
+    --parallax-ratio: -0.5;
+
+    content: "";
+    display: block;
+    position: sticky;
+    top: 0;
+    flex: none;
+    inline-size: calc(100% + 2 * var(--main-layout-horizontal-padding));
+    block-size: calc(100cqh + 2 * var(--ds-spacing-lg));
+    margin: calc(-1 * var(--main-layout-horizontal-padding)) calc(-1 * var(--main-layout-horizontal-padding))
+      calc(-100cqh - var(--main-layout-horizontal-padding));
+    background-image: var(--dot), var(--dot);
+    background-size: var(--dot-gap) calc(var(--dot-gap) * 2);
+    background-position:
+      0 0,
+      calc(var(--dot-gap) / 2) var(--dot-gap);
+    mask-image: radial-gradient(circle, black 0%, transparent 100%);
+    opacity: 0.3;
+    z-index: -1;
+
+    @supports (animation-timeline: scroll()) {
+      animation-name: parallax-dots;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 var(--fade-distance);
+    }
+  }
+}
+
+.main-layout__footer {
+  flex-shrink: 0;
+  container-name: footer;
+  container-type: inline-size;
+}

@@ -3,29 +3,51 @@
     "name": "StudioB04"
   },
   "common": {
+    "skiplinks": {
+      "header": "Skip to main header",
+      "main": "Skip to main content",
+      "footer": "Skip to footer"
+    },
+    "main-menu": {
+      "title": "Main menu"
+    },
+    "back-to-home": "Back to home",
     "languageSwitcher": "Language selection"
   },
   "pages": {
     "home": {
       "title": "StudioB04 – Graphic and digital design studio",
-      "description": "StudioB04 designs your digital and print media, signs, wayfinding and trade show stands."
+      "description": "StudioB04 designs your digital and print materials, signs, wayfinding and trade show stands."
     },
     "legal": {
       "slug": "legal-notice",
+      "link": "Legal notice",
       "title": "Legal notice – StudioB04",
-      "description": "Legal notice of the StudioB04 website."
+      "description": "Legal notice for the StudioB04 website."
     },
-    "notFound": {
-      "title": "Page not found – StudioB04",
-      "description": "The requested page does not exist.",
-      "heading": "Page not found",
-      "intro": "The page you are looking for does not exist or has been moved.",
-      "backHome": "Back to home"
+    "web": {
+      "slug": "digital",
+      "link": "Digital",
+      "title": "Web – StudioB04",
+      "description": "Web projects by StudioB04."
     },
-    "serverError": {
-      "heading": "Something went wrong",
-      "intro": "A technical problem prevents us from displaying this page. Please try again in a few moments.",
-      "backHome": "Back to home"
+    "print": {
+      "slug": "print",
+      "link": "Print",
+      "title": "Print – StudioB04",
+      "description": "Print projects by StudioB04."
+    },
+    "enseignes": {
+      "slug": "signs",
+      "link": "Signs & Wayfinding",
+      "title": "Signs – StudioB04",
+      "description": "Sign projects by StudioB04."
+    },
+    "salons": {
+      "slug": "trade-shows",
+      "link": "Trade Shows & POS",
+      "title": "Trade Shows – StudioB04",
+      "description": "Trade show stand projects by StudioB04."
     }
   }
 }

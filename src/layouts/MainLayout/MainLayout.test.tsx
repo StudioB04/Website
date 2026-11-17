@@ -1,14 +1,14 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { Link, MemoryRouter, Route, Routes } from "react-router";
-import { describe, expect, it } from "vitest";
-import GlobalLayout from "./GlobalLayout";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import MainLayout from "./MainLayout";
 
 /** Affiche le layout comme route de layout : la page "/" contient un lien vers la page "/b". */
 function renderLayout() {
   return render(
     <MemoryRouter initialEntries={["/"]}>
       <Routes>
-        <Route element={<GlobalLayout />}>
+        <Route element={<MainLayout />}>
           <Route path="/" element={<Link to="/b">Go to B</Link>} />
           <Route path="/b" element={<p>Page B</p>} />
         </Route>
@@ -33,7 +33,7 @@ function precedes(first: Element, second: Element) {
 /** Toutes les ancres, dans l'ordre de la page. */
 const allTargets = ["#header", "#main", "#footer", "#subfooter"];
 
-describe("GlobalLayout", () => {
+describe("MainLayout", () => {
   it("renders the header, the main content, the footer and the subfooter", () => {
     renderLayout();
 
@@ -108,5 +108,41 @@ describe("GlobalLayout", () => {
     expect(screen.getByRole("banner")).toBe(header);
     expect(screen.getByRole("main")).toBe(main);
     expect(screen.getByRole("contentinfo")).toBe(footer);
+  });
+});
+
+describe("MainLayout CSS variables", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    document.documentElement.removeAttribute("style");
+  });
+
+  it("exposes the height of the header, main, footer and subfooter on <html>", () => {
+    renderLayout();
+    const root = document.documentElement.style;
+
+    ["--header-height", "--main-height", "--footer-height", "--subfooter-height"].forEach(name => expect(root.getPropertyValue(name)).toMatch(/^\d+px$/));
+  });
+
+  it("keeps the variables up to date when a part is resized", () => {
+    const callbacks: ResizeObserverCallback[] = [];
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(callback: ResizeObserverCallback) {
+          callbacks.push(callback);
+        }
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    renderLayout();
+    const header = screen.getByRole("banner");
+    Object.defineProperty(header, "clientHeight", { configurable: true, value: 48 });
+
+    callbacks.forEach(callback => callback([{ target: header } as unknown as ResizeObserverEntry], {} as ResizeObserver));
+
+    expect(document.documentElement.style.getPropertyValue("--header-height")).toBe("48px");
   });
 });

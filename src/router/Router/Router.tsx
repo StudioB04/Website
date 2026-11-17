@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation } from "react-router";
 import { type Locale } from "@/i18n";
-import { GlobalLayout } from "@/layouts";
+import { MainLayout } from "@/layouts";
 import { ErrorPage } from "@/pages";
 import { useEffect, useRef } from "react";
 import { getPageMeta } from "@/head";
@@ -42,7 +42,7 @@ export default function Router() {
 
   return (
     <Routes>
-      <Route element={<GlobalLayout />}>
+      <Route element={<MainLayout />}>
         <Route element={<PageErrorBoundary />}>
           <Route path="/">{pages("fr")}</Route>
           <Route path="en">{pages("en")}</Route>

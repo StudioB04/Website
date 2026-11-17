@@ -3,6 +3,15 @@
     "name": "StudioB04"
   },
   "common": {
+    "skiplinks": {
+      "header": "Aller à l'en-tête principale",
+      "main": "Aller au contenu principal",
+      "footer": "Aller au pied de page"
+    },
+    "main-menu": {
+      "title": "Menu principal"
+    },
+    "back-to-home": "Retour à l'accueil",
     "languageSwitcher": "Choix de la langue"
   },
   "pages": {
@@ -12,20 +21,33 @@
     },
     "legal": {
       "slug": "mentions-legales",
+      "link": "Mentions légales",
       "title": "Mentions légales – StudioB04",
       "description": "Mentions légales du site StudioB04."
     },
-    "notFound": {
-      "title": "Page introuvable – StudioB04",
-      "description": "La page demandée n'existe pas.",
-      "heading": "Page introuvable",
-      "intro": "La page que vous cherchez n'existe pas ou a été déplacée.",
-      "backHome": "Retour à l'accueil"
+    "web": {
+      "slug": "numerique",
+      "link": "Numérique",
+      "title": "Web – StudioB04",
+      "description": "Projets web du studio StudioB04."
     },
-    "serverError": {
-      "heading": "Une erreur est survenue",
-      "intro": "Un problème technique nous empêche d'afficher cette page. Réessayez dans quelques instants.",
-      "backHome": "Retour à l'accueil"
+    "print": {
+      "slug": "impression",
+      "link": "Impression",
+      "title": "Print – StudioB04",
+      "description": "Projets imprimés du studio StudioB04."
+    },
+    "enseignes": {
+      "slug": "enseignes",
+      "link": "Enseignes & Signalétique",
+      "title": "Enseignes – StudioB04",
+      "description": "Projets d'enseignes du studio StudioB04."
+    },
+    "salons": {
+      "slug": "salons",
+      "link": "Salons & PLV",
+      "title": "Salons – StudioB04",
+      "description": "Projets de stands de salon du studio StudioB04."
     }
   }
 }

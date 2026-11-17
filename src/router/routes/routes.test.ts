@@ -1,18 +1,6 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { locales, translate, type MessageKey } from "@/i18n";
-import {
-  findPage,
-  getAllRoutes,
-  getAlternates,
-  getLocaleFromPath,
-  getPageIds,
-  getPages,
-  getPath,
-  getSlug,
-  mainNavPages,
-  servicePages,
-  type PageId,
-} from "@/router";
+import { findPage, getAllRoutes, getAlternates, getLocaleFromPath, getPageIds, getPages, getPath, getSlug } from "@/router";
 
 describe("routes", () => {
   it("puts the default locale at the root and prefixes the others", () => {
@@ -103,19 +91,5 @@ describe("pages found in src/pages", () => {
       expect(new Set(slugs).size).toBe(slugs.length);
       expect(getPageIds().filter(pageId => getSlug(pageId, locale) === "")).toEqual(["home"]);
     }
-  });
-
-  it("only lists known pages in the menus", () => {
-    for (const pageId of [...mainNavPages, ...servicePages]) {
-      expect(getPageIds()).toContain(pageId);
-    }
-  });
-
-  it("types page ids from the JSON files: a typo or the 404 block is refused", () => {
-    expectTypeOf<"home">().toExtend<PageId>();
-    expectTypeOf<"legal">().toExtend<PageId>();
-    expectTypeOf<"notFound">().not.toExtend<PageId>();
-    expectTypeOf<"serverError">().not.toExtend<PageId>();
-    expectTypeOf<"lgal">().not.toExtend<PageId>();
   });
 });

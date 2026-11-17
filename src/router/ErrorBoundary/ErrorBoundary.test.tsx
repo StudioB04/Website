@@ -8,7 +8,7 @@ function Bomb(): never {
   throw new Error("boom");
 }
 
-// Remplace GlobalLayout : doit rester affiché quand une page plante.
+// Remplace MainLayout : doit rester affiché quand une page plante.
 function Layout() {
   return (
     <div>
