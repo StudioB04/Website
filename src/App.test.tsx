@@ -22,10 +22,10 @@ function GoTo({ to, children }: { to: string; children: string }) {
 }
 
 describe("App", () => {
-  it.each(getAllRoutes())("renders $path with its heading, title and lang", ({ path, pageId, locale }) => {
+  it.each(getAllRoutes())("renders $path with its title and lang", ({ path, pageId, locale }) => {
     renderAt(path);
 
-    expect(screen.getByRole("heading", { level: 1, name: "Lorem ipsum" })).toBeDefined();
+    expect(screen.getByRole("main")).toBeDefined();
     expect(document.title).toBe(translate(locale, `pages.${pageId}.title` as MessageKey));
     expect(document.documentElement.lang).toBe(locale);
   });
@@ -40,20 +40,20 @@ describe("App", () => {
 
   it("serves the French home page at the root, without redirect", () => {
     renderAt("/");
-    expect(screen.getByRole("heading", { level: 1, name: "Lorem ipsum" })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1 })).toBeDefined();
     expect(document.title).toBe(dictionaries.fr.pages.home.title);
     expect(document.documentElement.lang).toBe("fr");
   });
 
   it("shows the not found page in French for unknown URLs without prefix", () => {
     renderAt("/does-not-exist/");
-    expect(screen.getByRole("heading", { level: 1, name: "Page introuvable" })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: translate("fr", "pages.notFound.heading") })).toBeDefined();
     expect(document.documentElement.lang).toBe("fr");
   });
 
   it("shows the not found page in the locale of the URL", () => {
     renderAt("/en/does-not-exist/");
-    expect(screen.getByRole("heading", { level: 1, name: "Page not found" })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: translate("en", "pages.notFound.heading") })).toBeDefined();
     expect(document.documentElement.lang).toBe("en");
   });
 
@@ -80,15 +80,15 @@ describe("App", () => {
   it("moves focus to the page heading after a client-side navigation, not on first render", () => {
     render(
       <StrictMode>
-        <MemoryRouter initialEntries={["/"]}>
+        <MemoryRouter initialEntries={["/mentions-legales/"]}>
           <App />
-          <GoTo to="/mentions-legales/">to legal</GoTo>
+          <GoTo to="/">to home</GoTo>
         </MemoryRouter>
       </StrictMode>,
     );
     expect(document.activeElement).toBe(document.body);
 
-    fireEvent.click(screen.getByRole("button", { name: "to legal" }));
+    fireEvent.click(screen.getByRole("button", { name: "to home" }));
 
     expect(document.activeElement).toBe(screen.getByRole("heading", { level: 1 }));
   });

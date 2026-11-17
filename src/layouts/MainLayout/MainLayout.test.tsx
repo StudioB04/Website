@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { Link, MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import MainLayout from "./MainLayout";
+import { translate } from "@/i18n";
 
 /** Affiche le layout comme route de layout : la page "/" contient un lien vers la page "/b". */
 function renderLayout() {
@@ -31,16 +32,15 @@ function precedes(first: Element, second: Element) {
 }
 
 /** Toutes les ancres, dans l'ordre de la page. */
-const allTargets = ["#header", "#main", "#footer", "#subfooter"];
+const allTargets = ["#header", "#main", "#footer"];
 
 describe("MainLayout", () => {
-  it("renders the header, the main content, the footer and the subfooter", () => {
+  it("renders the header, the main content and the footer", () => {
     renderLayout();
 
     expect(screen.getByRole("banner").id).toBe("header");
     expect(screen.getByRole("main").id).toBe("main");
     expect(screen.getByRole("contentinfo").id).toBe("footer");
-    expect(document.getElementById("subfooter")).not.toBeNull();
   });
 
   it("renders the current route inside main", () => {
@@ -49,9 +49,9 @@ describe("MainLayout", () => {
     expect(within(screen.getByRole("main")).getByRole("link", { name: "Go to B" })).toBeDefined();
   });
 
-  it("keeps the parts in reading order: header, main, footer, subfooter", () => {
+  it("keeps the parts in reading order: header, main, footer", () => {
     renderLayout();
-    const parts = [screen.getByRole("banner"), screen.getByRole("main"), screen.getByRole("contentinfo"), document.getElementById("subfooter") as HTMLElement];
+    const parts = [screen.getByRole("banner"), screen.getByRole("main"), screen.getByRole("contentinfo")];
 
     parts.slice(1).forEach((part, index) => expect(precedes(parts[index], part)).toBe(true));
   });
@@ -117,11 +117,11 @@ describe("MainLayout CSS variables", () => {
     document.documentElement.removeAttribute("style");
   });
 
-  it("exposes the height of the header, main, footer and subfooter on <html>", () => {
+  it("exposes the height of the header, main and footer on <html>", () => {
     renderLayout();
     const root = document.documentElement.style;
 
-    ["--header-height", "--main-height", "--footer-height", "--subfooter-height"].forEach(name => expect(root.getPropertyValue(name)).toMatch(/^\d+px$/));
+    ["--header-height", "--main-height", "--footer-height"].forEach(name => expect(root.getPropertyValue(name)).toMatch(/^\d+px$/));
   });
 
   it("keeps the variables up to date when a part is resized", () => {
@@ -144,5 +144,90 @@ describe("MainLayout CSS variables", () => {
     callbacks.forEach(callback => callback([{ target: header } as unknown as ResizeObserverEntry], {} as ResizeObserver));
 
     expect(document.documentElement.style.getPropertyValue("--header-height")).toBe("48px");
+  });
+});
+
+describe("MainLayout top button", () => {
+  const visibleClass = "main-layout__inner__top-button--visible";
+
+  /** Le bouton est cherché aussi quand il est masqué (`inert`) : c'est justement l'état à vérifier. */
+  const topButton = () => screen.getByRole("button", { name: translate("fr", "common.buttons.scroll-to-top"), hidden: true });
+
+  /** Simule un défilement de la fenêtre à `top` pixels : jsdom ne défile pas, la position est posée à la main. */
+  function scrollTo(top: number) {
+    Object.defineProperty(window, "scrollY", { configurable: true, value: top });
+    fireEvent.scroll(window);
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    Object.defineProperty(window, "scrollY", { configurable: true, value: 0 });
+  });
+
+  it("is hidden at the top of the page, and out of the tab order and the accessibility tree", () => {
+    renderLayout();
+
+    expect(topButton().classList.contains(visibleClass)).toBe(false);
+    expect(topButton().hasAttribute("inert")).toBe(true);
+  });
+
+  it("appears once the page is scrolled past 400px", () => {
+    renderLayout();
+
+    scrollTo(401);
+
+    expect(topButton().classList.contains(visibleClass)).toBe(true);
+    expect(topButton().hasAttribute("inert")).toBe(false);
+    expect(screen.getByRole("button", { name: translate("fr", "common.buttons.scroll-to-top") })).toBe(topButton());
+  });
+
+  it("stays hidden up to 400px included", () => {
+    renderLayout();
+
+    scrollTo(400);
+
+    expect(topButton().classList.contains(visibleClass)).toBe(false);
+  });
+
+  it("disappears again when the user scrolls back up", () => {
+    renderLayout();
+    scrollTo(800);
+    expect(topButton().classList.contains(visibleClass)).toBe(true);
+
+    scrollTo(120);
+
+    expect(topButton().classList.contains(visibleClass)).toBe(false);
+    expect(topButton().hasAttribute("inert")).toBe(true);
+  });
+
+  it("is already visible when the page opens scrolled (reload, back navigation)", () => {
+    Object.defineProperty(window, "scrollY", { configurable: true, value: 600 });
+
+    renderLayout();
+
+    expect(topButton().classList.contains(visibleClass)).toBe(true);
+  });
+
+  it("scrolls back to the top of the page when clicked", () => {
+    const scrollToTop = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    renderLayout();
+    scrollTo(600);
+
+    fireEvent.click(topButton());
+
+    expect(scrollToTop).toHaveBeenCalledWith({ top: 0 });
+  });
+
+  it("stops listening to the scroll when the layout is unmounted", () => {
+    const addListener = vi.spyOn(window, "addEventListener");
+    const { unmount } = renderLayout();
+    const [, , options] = addListener.mock.calls.find(([type]) => type === "scroll") ?? [];
+    const { signal } = options as AddEventListenerOptions;
+
+    expect(signal?.aborted).toBe(false);
+
+    unmount();
+
+    expect(signal?.aborted).toBe(true);
   });
 });

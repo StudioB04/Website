@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Outlet, Route, Routes, useNavigate } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import PageErrorBoundary from "./ErrorBoundary";
-import { dictionaries, I18nProvider, type Locale } from "@/i18n";
+import { I18nProvider, translate, type Locale } from "@/i18n";
 
 function Bomb(): never {
   throw new Error("boom");
@@ -62,14 +62,14 @@ describe("PageErrorBoundary", () => {
   it("shows the 500 page instead of a blank screen when a page throws", () => {
     renderApp("/broken");
 
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.fr.pages.serverError.heading })).toBeDefined();
-    expect(screen.getByRole("link", { name: dictionaries.fr.pages.serverError.backHome })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: translate("fr", "pages.serverError.heading") })).toBeDefined();
+    expect(screen.getByRole("link", { name: translate("fr", "common.buttons.back-to-home") })).toBeDefined();
   });
 
   it("shows the 500 page in the language of the page", () => {
     renderApp("/broken", "en");
 
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.en.pages.serverError.heading })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: translate("en", "pages.serverError.heading") })).toBeDefined();
   });
 
   it("keeps the layout around the error", () => {
@@ -78,13 +78,13 @@ describe("PageErrorBoundary", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "go broken" }));
 
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.fr.pages.serverError.heading })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: translate("fr", "pages.serverError.heading") })).toBeDefined();
     expect(screen.getByText("layout")).toBe(layout);
   });
 
   it("goes back to normal as soon as the user navigates to another page", () => {
     renderApp("/broken");
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.fr.pages.serverError.heading })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: translate("fr", "pages.serverError.heading") })).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "go home" }));
 
@@ -99,6 +99,6 @@ describe("PageErrorBoundary", () => {
     fireEvent.click(screen.getByRole("button", { name: "go home" }));
     fireEvent.click(screen.getByRole("button", { name: "go broken" }));
 
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.fr.pages.serverError.heading })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: translate("fr", "pages.serverError.heading") })).toBeDefined();
   });
 });

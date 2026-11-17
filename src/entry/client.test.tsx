@@ -3,6 +3,7 @@ import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "@/App";
+import { dictionaries } from "@/i18n";
 
 type ReactDomClient = typeof import("react-dom/client");
 
@@ -81,7 +82,7 @@ describe("entry/client", () => {
 
     expect(createRoot).toHaveBeenCalledWith(container);
     expect(hydrateRoot).not.toHaveBeenCalled();
-    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe("Lorem ipsum");
+    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe(dictionaries.fr.pages.legal.title);
   });
 
   it("hydrates the pre-rendered HTML in place when #root already has content", async () => {
@@ -104,7 +105,7 @@ describe("entry/client", () => {
 
     expect(hydrateRoot).toHaveBeenCalledOnce();
     expect(spy.recoverableErrors).toEqual([]);
-    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe("Lorem ipsum");
+    expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe(dictionaries.en.pages.legal.title);
   });
 
   describe("under a base path (GitHub Pages)", () => {
@@ -117,7 +118,7 @@ describe("entry/client", () => {
 
       await runClient();
 
-      expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe("Lorem ipsum");
+      expect(within(container).getByRole("heading", { level: 1 }).textContent).toBe(dictionaries.en.pages.legal.title);
     });
 
     it("prefixes every internal link with the base path", async () => {

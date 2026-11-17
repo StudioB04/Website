@@ -11,10 +11,17 @@
     "main-menu": {
       "title": "Main menu"
     },
-    "back-to-home": "Back to home",
+    "buttons": {
+      "scroll-to-top": "Scroll to top",
+      "back-to-home": "Back to home"
+    },
     "languageSwitcher": "Language selection"
   },
   "pages": {
+    "error": {
+      "title": "Error {{status}}.",
+      "intro": "An error occurred,\nplease try again later or contact the administrator."
+    },
     "home": {
       "title": "StudioB04 – Graphic and digital design studio",
       "description": "StudioB04 designs your digital and print materials, signs, wayfinding and trade show stands."
@@ -48,6 +55,12 @@
       "link": "Trade Shows & POS",
       "title": "Trade Shows – StudioB04",
       "description": "Trade show stand projects by StudioB04."
+    },
+    "actu": {
+      "slug": "actuality",
+      "link": "Actuality",
+      "title": "Actuality – StudioB04",
+      "description": "Actuality of the StudioB04."
     }
   }
 }

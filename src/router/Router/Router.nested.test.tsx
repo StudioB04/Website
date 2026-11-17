@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import App from "@/App";
-import { dictionaries } from "@/i18n";
+import { translate } from "@/i18n";
 
 // Pages simulées : un accueil, un dossier de pages imbriquées (`Print/Global`), une page sans `slug` dans les JSON (`TradeShows`)
 // et une page dont le dossier n'a pas de page à lui seul (`Docs/Guide`).
@@ -75,6 +75,6 @@ describe("Router with nested pages", () => {
   ] as const)("shows the 404 page for %s", (path, locale) => {
     renderAt(path);
 
-    expect(heading()).toBe(dictionaries[locale].pages.notFound.heading);
+    expect(heading()).toBe(translate(locale, "pages.notFound.heading"));
   });
 });

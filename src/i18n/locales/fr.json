@@ -11,10 +11,17 @@
     "main-menu": {
       "title": "Menu principal"
     },
-    "back-to-home": "Retour à l'accueil",
+    "buttons": {
+      "scroll-to-top": "Retour en haut de page",
+      "back-to-home": "Retour à l'accueil"
+    },
     "languageSwitcher": "Choix de la langue"
   },
   "pages": {
+    "error": {
+      "title": "Erreur {{status}}.",
+      "intro": "Une erreur est survenue,\nmerci de réessayer plus tard ou contacter l'administrateur."
+    },
     "home": {
       "title": "StudioB04 – Studio de création graphique et numérique",
       "description": "StudioB04 conçoit vos supports numériques, imprimés, enseignes, signalétique et stands de salon."
@@ -48,6 +55,12 @@
       "link": "Salons & PLV",
       "title": "Salons – StudioB04",
       "description": "Projets de stands de salon du studio StudioB04."
+    },
+    "actu": {
+      "slug": "actualites",
+      "link": "Actualités",
+      "title": "Actualités – StudioB04",
+      "description": "Actualités du studio StudioB04."
     }
   }
 }

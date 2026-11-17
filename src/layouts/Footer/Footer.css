@@ -1,6 +1,6 @@
 .footer {
   position: relative;
-  background-color: var(--ds-bg-tertiary);
+  background-color: var(--ds-bg-primary);
   margin-block-start: var(--ds-spacing-3xl);
   margin-inline: calc(-1 * var(--main-layout-horizontal-padding));
   padding: var(--main-layout-horizontal-padding);

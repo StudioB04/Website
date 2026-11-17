@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { dictionaries, translate } from "@/i18n";
 import { render } from "./server";
 
 describe("entry-server", () => {
@@ -8,7 +9,7 @@ describe("entry-server", () => {
 
     expect(locale).toBe("en");
     expect(html).toContain("<h1");
-    expect(html).toContain("Lorem ipsum");
+    expect(html).toContain(dictionaries.en.pages.legal.title);
     expect(head).toContain("<title>Legal notice – StudioB04</title>");
   });
 
@@ -16,7 +17,7 @@ describe("entry-server", () => {
     const { html, head, locale } = await render("/404/");
 
     expect(locale).toBe("fr");
-    expect(html).toContain("Page introuvable");
+    expect(html).toContain(translate("fr", "pages.notFound.heading"));
     expect(head).toContain("noindex");
   });
 });
@@ -39,7 +40,7 @@ describe("entry-server under a base path (GitHub Pages)", () => {
 
     expect(locale).toBe("en");
     expect(html).toContain("<h1");
-    expect(html).toContain("Lorem ipsum");
+    expect(html).toContain(dictionaries.en.pages.legal.title);
   });
 
   it("prefixes every internal link with the base path", async () => {

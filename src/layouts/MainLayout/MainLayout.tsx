@@ -1,6 +1,7 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import { clsx } from "clsx";
 import { Outlet } from "react-router";
-import { SkipLink } from "@studio_b04/ds/uikit";
+import { Icon, SkipLink } from "@studio_b04/ds/uikit";
 import { useI18n } from "@/i18n";
 import { setHTMLCustomProp } from "@studio_b04/ds/utils";
 import { Footer, Header } from "@/layouts";
@@ -14,11 +15,23 @@ export default function MainLayout() {
   const mainRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
 
+  const [isTopButtonVisible, setIsTopButtonVisible] = useState(false);
+
   useEffect(() => {
     setHTMLCustomProp(headerRef.current, "clientHeight", "--header-height");
     setHTMLCustomProp(mainRef.current, "clientHeight", "--main-height");
     setHTMLCustomProp(footerRef.current, "clientHeight", "--footer-height");
   }, [headerRef, mainRef, footerRef]);
+
+  useEffect(() => {
+    const ac = new AbortController();
+    const updateTopButton = () => setIsTopButtonVisible(globalThis.scrollY > 400);
+
+    updateTopButton();
+    globalThis.addEventListener("scroll", updateTopButton, { passive: true, signal: ac.signal });
+
+    return () => ac.abort();
+  }, []);
 
   return (
     <>
@@ -33,6 +46,16 @@ export default function MainLayout() {
 
         <main id="main" ref={mainRef} className="main-layout__inner">
           <Outlet />
+
+          <button
+            type="button"
+            title={t("common.buttons.scroll-to-top")}
+            className={clsx("main-layout__inner__top-button", isTopButtonVisible && "main-layout__inner__top-button--visible")}
+            inert={!isTopButtonVisible}
+            onClick={() => globalThis.scrollTo({ top: 0 })}>
+            <Icon src="arrow-up-to-line" size={24} />
+            <div className="sr-only">{t("common.buttons.scroll-to-top")}</div>
+          </button>
         </main>
 
         <footer id="footer" ref={footerRef} className="main-layout__footer" role="contentinfo">

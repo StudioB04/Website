@@ -11,9 +11,9 @@ export default function Header() {
 
   return (
     <div className="header">
-      <Link to={getPath("home", locale)} className="header__logo" title={t("common.back-to-home")}>
+      <Link to={getPath("home", locale)} className="header__logo" title={t("common.buttons.back-to-home")}>
         <Logo />
-        <span className="sr-only">{t("common.back-to-home")}</span>
+        <span className="sr-only">{t("common.buttons.back-to-home")}</span>
       </Link>
 
       <MainNavigation />

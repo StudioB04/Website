@@ -15,6 +15,7 @@
 :root {
   font-size: 16px;
   background-color: var(--ds-bg-tertiary);
+  scroll-behavior: smooth;
 }
 
 #root {

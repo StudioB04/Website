@@ -58,58 +58,56 @@ describe("i18n", () => {
 });
 
 // Aucun texte du site n'a de paramètre ni n'est vide : ces cas se testent en remplaçant un texte le temps du test.
-const sample = dictionaries.fr.pages.notFound;
-const originalIntro = sample.intro;
+const sample = dictionaries.fr.pages.home;
+const originalDescription = sample.description;
 
 afterEach(() => {
-  sample.intro = originalIntro;
+  sample.description = originalDescription;
   delete (sample as Record<string, unknown>).list;
 });
 
 describe("translate", () => {
   it("reads a text by its dotted key, in the requested language", () => {
-    expect(translate("fr", "pages.notFound.heading")).toBe(dictionaries.fr.pages.notFound.heading);
-    expect(translate("en", "pages.notFound.heading")).toBe(dictionaries.en.pages.notFound.heading);
+    expect(translate("fr", "pages.home.title")).toBe(dictionaries.fr.pages.home.title);
+    expect(translate("en", "pages.home.title")).toBe(dictionaries.en.pages.home.title);
     expect(translate("en", "site.name")).toBe(dictionaries.en.site.name);
   });
 
   it("replaces {{param}} with its value", () => {
-    sample.intro = "© {{year}} StudioB04.";
+    sample.description = "© {{year}} StudioB04.";
 
-    expect(translate("fr", "pages.notFound.intro", { year: 2026 })).toBe("© 2026 StudioB04.");
-    expect(translate("fr", "pages.notFound.intro", { year: "2026" })).toBe("© 2026 StudioB04.");
+    expect(translate("fr", "pages.home.description", { year: 2026 })).toBe("© 2026 StudioB04.");
+    expect(translate("fr", "pages.home.description", { year: "2026" })).toBe("© 2026 StudioB04.");
   });
 
   it("handles repeated, spaced and numeric params, and keeps the ones it has no value for", () => {
-    sample.intro = "lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}";
+    sample.description = "lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}";
 
-    expect(translate("fr", "pages.notFound.intro", { a: "A", b: 2, zero: 0 })).toBe("lorem A ipsum A 2 {{missing}} 0");
-    expect(translate("fr", "pages.notFound.intro")).toBe("lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}");
+    expect(translate("fr", "pages.home.description", { a: "A", b: 2, zero: 0 })).toBe("lorem A ipsum A 2 {{missing}} 0");
+    expect(translate("fr", "pages.home.description")).toBe("lorem {{a}} ipsum {{ a }} {{b}} {{missing}} {{zero}}");
   });
 
   it("does not interpret the value of a param", () => {
-    sample.intro = "{{a}}";
+    sample.description = "{{a}}";
 
-    expect(translate("fr", "pages.notFound.intro", { a: "{{b}} $& $1", b: "x" })).toBe("{{b}} $& $1");
+    expect(translate("fr", "pages.home.description", { a: "{{b}} $& $1", b: "x" })).toBe("{{b}} $& $1");
   });
 
   it("returns an empty text as is, not the key", () => {
-    sample.intro = "";
+    sample.description = "";
 
-    expect(translate("fr", "pages.notFound.intro")).toBe("");
+    expect(translate("fr", "pages.home.description")).toBe("");
   });
 
   it("returns the key itself when the text does not exist", () => {
-    // @ts-expect-error la clé n'existe pas : TypeScript la refuse, et au besoin t renvoie la clé
-    expect(translate("fr", "pages.notFound.nope")).toBe("pages.notFound.nope");
-    // @ts-expect-error un bloc n'est pas un texte
+    expect(translate("fr", "pages.home.nope")).toBe("pages.home.nope");
     expect(translate("fr", "pages")).toBe("pages");
   });
 
   it("does not read a list as a text: it is read through `messages`", () => {
     (sample as Record<string, unknown>).list = [{ title: "a", text: "b" }];
 
-    expect(translate("fr", "pages.notFound.list" as MessageKey)).toBe("pages.notFound.list");
+    expect(translate("fr", "pages.home.list" as MessageKey)).toBe("pages.home.list");
   });
 
   it("never reads inherited properties", () => {
@@ -125,9 +123,9 @@ describe("findMessage", () => {
   });
 
   it("returns an empty text as is", () => {
-    sample.intro = "";
+    sample.description = "";
 
-    expect(findMessage("fr", "pages.notFound.intro")).toBe("");
+    expect(findMessage("fr", "pages.home.description")).toBe("");
   });
 
   it("returns undefined, not the key, when there is no text", () => {
@@ -135,7 +133,7 @@ describe("findMessage", () => {
 
     expect(findMessage("fr", "pages.nope.slug")).toBeUndefined();
     expect(findMessage("fr", "pages")).toBeUndefined();
-    expect(findMessage("fr", "pages.notFound.list")).toBeUndefined();
+    expect(findMessage("fr", "pages.home.list")).toBeUndefined();
   });
 
   it("never reads inherited properties", () => {
@@ -152,7 +150,7 @@ describe("useI18n", () => {
 
     expect(result.current.locale).toBe(locale);
     expect(result.current.messages).toBe(dictionaries[locale]);
-    expect(result.current.t("pages.notFound.heading")).toBe(dictionaries[locale].pages.notFound.heading);
+    expect(result.current.t("pages.home.title")).toBe(dictionaries[locale].pages.home.title);
   });
 
   it("falls back to the default locale outside a provider", () => {

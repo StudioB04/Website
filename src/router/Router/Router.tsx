@@ -16,6 +16,8 @@ function useDocumentUpdate(pathname: string, locale: Locale, pageId: PageId | nu
     document.title = title;
     document.querySelector('meta[name="description"]')?.setAttribute("content", description);
 
+    globalThis?.scrollTo?.({ top: 0 });
+
     if (lastPathname.current === pathname) return;
 
     lastPathname.current = pathname;
