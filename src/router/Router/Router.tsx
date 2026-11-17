@@ -4,10 +4,10 @@ import { MainLayout } from "@/layouts";
 import { ErrorPage } from "@/pages";
 import { useEffect, useRef } from "react";
 import { getPageMeta } from "@/head";
-import { findPage, getLocaleFromPath, getPages, getSlug, type PageId } from "@/router";
+import { findPage, getLocaleFromPath, getPages, getSlug } from "@/router";
 import PageErrorBoundary from "../ErrorBoundary/ErrorBoundary";
 
-function useDocumentUpdate(pathname: string, locale: Locale, pageId: PageId | null) {
+function useDocumentUpdate(pathname: string, locale: Locale, pageId: string | null) {
   const lastPathname = useRef(pathname);
 
   useEffect(() => {

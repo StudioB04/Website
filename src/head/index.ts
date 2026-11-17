@@ -2,7 +2,6 @@ import { NOINDEX, SITE_URL } from "@/config";
 import { defaultLocale, locales, translate } from "@/i18n";
 import type { Locale } from "@/i18n";
 import { getAlternates, getPath } from "@/router";
-import type { PageId } from "@/router";
 
 const ogLocales: Record<Locale, string> = { fr: "fr_FR", en: "en_GB" };
 
@@ -15,11 +14,11 @@ export interface PageMeta {
   description: string;
 }
 
-export function getPageMeta(pageId: PageId | "notFound", locale: Locale): PageMeta {
+export function getPageMeta(pageId: string | "notFound", locale: Locale): PageMeta {
   return { title: translate(locale, `pages.${pageId}.title`), description: translate(locale, `pages.${pageId}.description`) };
 }
 
-export function renderHead(pageId: PageId | "notFound", locale: Locale): string {
+export function renderHead(pageId: string | "notFound", locale: Locale): string {
   const { title, description } = getPageMeta(pageId, locale);
   const tags = [`<title>${escapeHtml(title)}</title>`, `<meta name="description" content="${escapeHtml(description)}" />`];
 
