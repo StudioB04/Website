@@ -69,6 +69,33 @@
   }
 }
 
+.main-layout__preheader {
+  position: relative;
+  color: var(--ds-text-inverse-primary);
+  background-color: var(--ds-bg-inverse-primary);
+  font-size: var(--ds-font-size-text-sm);
+  font-weight: var(--ds-font-weight-semibold);
+  padding-block: var(--ds-spacing-xs);
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  inline-size: 100%;
+  max-inline-size: 92rem;
+  margin-inline: auto;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block: 0;
+    inline-size: 100dvw;
+    block-size: 100%;
+    transform: translateX(-50%);
+    background-color: inherit;
+    z-index: -1;
+  }
+}
+
 .main-layout__header {
   container-name: header;
   container-type: inline-size;
@@ -160,14 +187,12 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--ds-radius-xs);
-    rotate: -20deg;
     translate: 0 200%;
     opacity: 0;
     background-color: var(--ds-bg-brand-solid);
-    color: var(--ds-text-white);
+    color: var(--ds-color-white);
     box-shadow: var(--ds-box-shadow-lg);
     transition:
-      rotate var(--ds-transition-delay-regular) ease,
       translate var(--ds-transition-delay-regular) ease,
       opacity var(--ds-transition-delay-regular) ease;
 
@@ -181,7 +206,6 @@
     }
 
     &.main-layout__inner__top-button--visible {
-      rotate: 5deg;
       translate: 0 50%;
       opacity: 1;
     }
@@ -192,4 +216,32 @@
   flex-shrink: 0;
   container-name: footer;
   container-type: inline-size;
+}
+
+.main-layout__options {
+  position: fixed;
+  inset-inline-start: 0;
+  inset-block-end: 6rem;
+  padding: var(--ds-spacing-sm);
+  border-start-end-radius: var(--ds-radius-md);
+  border-end-end-radius: var(--ds-radius-md);
+  background-color: var(--ds-bg-primary);
+  border: var(--ds-border-primary-1px);
+  box-shadow: var(--ds-box-shadow-md);
+  z-index: 4;
+  transition: transform var(--ds-transition-delay-fast) ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1rem;
+  }
+
+  &:not(:hover, :focus-visible) {
+    transform: translateX(-55%) rotate(-3deg);
+  }
+
+  &:is(:active) {
+    scale: 0.95;
+  }
 }

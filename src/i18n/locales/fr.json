@@ -8,6 +8,9 @@
       "main": "Aller au contenu principal",
       "footer": "Aller au pied de page"
     },
+    "settings": {
+      "title": "Paramètres d'accessibilité et préférences"
+    },
     "main-menu": {
       "title": "Menu principal"
     },

@@ -1,8 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import { clsx } from "clsx";
-import { Outlet } from "react-router";
-import { Icon, SkipLink } from "@studio_b04/ds/uikit";
 import { useI18n } from "@/i18n";
+import { Outlet } from "react-router";
+import { Icon, Link, SkipLink } from "@studio_b04/ds/uikit";
 import { setHTMLCustomProp } from "@studio_b04/ds/utils";
 import { Footer, Header } from "@/layouts";
 
@@ -40,6 +40,11 @@ export default function MainLayout() {
       <SkipLink label={t("common.skiplinks.footer")} anchor="#footer" />
 
       <div className="main-layout">
+        <section className="main-layout__preheader">
+          <span>à vos côtés depuis 2009</span>
+          <Link href="tel:+33644282055" label="+33 (0) 644 28 20 55" variant="inverse" iconStart="phone" className="text-xs!" />
+        </section>
+
         <header id="header" ref={headerRef} className="main-layout__header" role="banner">
           <Header />
         </header>
@@ -61,6 +66,12 @@ export default function MainLayout() {
         <footer id="footer" ref={footerRef} className="main-layout__footer" role="contentinfo">
           <Footer />
         </footer>
+
+        {/* <button className="main-layout__options" popoverTarget="options" title={t("common.settings.title")}>
+          <div className="sr-only">{t("common.settings.title")}</div>
+          <Icon src="settings" size={24} />
+        </button>
+        <SettingsPanel /> */}
       </div>
     </>
   );

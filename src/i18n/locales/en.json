@@ -8,6 +8,9 @@
       "main": "Skip to main content",
       "footer": "Skip to footer"
     },
+    "settings": {
+      "title": "Accessibility settings and preferences"
+    },
     "main-menu": {
       "title": "Main menu"
     },

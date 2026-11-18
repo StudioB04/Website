@@ -55,7 +55,7 @@
     display: block;
 
     &:is(:hover, :focus-visible) {
-      color: var(--ds-text-brand);
+      color: var(--ds-text-brand-primary);
       background-color: var(--ds-bg-brand-primary);
       box-shadow: var(--ds-box-shadow-md);
       scale: 1.025;
@@ -67,7 +67,7 @@
     }
 
     &[aria-current="page"] {
-      color: var(--ds-text-brand);
+      color: var(--ds-text-brand-primary);
     }
   }
 }

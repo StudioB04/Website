@@ -1,29 +1,31 @@
-@layer base, properties, theme, fonts, utilities, components;
-
-@import "@studio_b04/ds/styles" layer(base);
-@import "@studio_b04/ds/reset" layer(base);
+@layer theme, fonts, utilities, components;
 
 @import "tailwindcss" layer(theme);
-@import "@studio_b04/ds/tailwind-theme" layer(theme);
+@import "@studio_b04/ds/styles/tokens" layer(theme);
+@import "@studio_b04/ds/styles/reset" layer(theme);
+@import "@studio_b04/ds/styles/tailwind-theme" layer(theme);
 
 @layer fonts {
   :root {
     --ds-font-family-sans: "Red Hat Display", sans-serif;
+    --ds-font-family-mono: "Red Hat Mono", monospace;
+    --ds-font-family-serif: "Noto Serif", serif;
   }
 }
 
-:root {
-  font-size: 16px;
-  background-color: var(--ds-bg-tertiary);
-  scroll-behavior: smooth;
-}
+body {
+  min-height: 100dvh;
+  color: var(--ds-text-primary);
+  background-color: var(--ds-bg-primary);
+  font-family: var(--ds-font-family-sans);
 
-#root {
-  container-type: inline-size;
-  container-name: screen;
-  min-block-size: 100dvh;
-  inline-size: 100dvw;
-  max-inline-size: 1920px;
-  margin-inline: auto;
-  overflow-x: clip;
+  #root {
+    container-type: inline-size;
+    container-name: screen;
+    min-block-size: 100dvh;
+    inline-size: 100dvw;
+    max-inline-size: 1920px;
+    margin-inline: auto;
+    overflow-x: clip;
+  }
 }
