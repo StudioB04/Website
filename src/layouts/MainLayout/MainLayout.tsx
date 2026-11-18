@@ -41,8 +41,11 @@ export default function MainLayout() {
 
       <div className="main-layout">
         <section className="main-layout__preheader">
-          <span>à vos côtés depuis 2009</span>
-          <Link href="tel:+33644282055" label="+33 (0) 644 28 20 55" variant="inverse" iconStart="phone" className="text-xs!" />
+          <span>À vos côtés depuis 2009</span>
+          <a className="main-layout__preheader__link" href="tel:+33644282055" aria-label="+33 (0) 644 28 20 55">
+            <Icon src="phone" size={16} />
+            +33 (0) 644 28 20 55
+          </a>
         </section>
 
         <header id="header" ref={headerRef} className="main-layout__header" role="banner">
