@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { clsx } from "clsx";
 import { useI18n } from "@/i18n";
 import { Outlet } from "react-router";
-import { Icon, Link, SkipLink } from "@studio_b04/ds/uikit";
+import { Icon, SkipLink } from "@studio_b04/ds/uikit";
 import { setHTMLCustomProp } from "@studio_b04/ds/utils";
 import { Footer, Header } from "@/layouts";
 
