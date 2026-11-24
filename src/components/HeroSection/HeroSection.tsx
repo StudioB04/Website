@@ -4,7 +4,7 @@ import { Badge } from "@studio_b04/ds/uikit";
 export default function HeroSection() {
   return (
     <div className="relative">
-      <GlassBlock as="section" className="inline-full mbs-5xl! shadow-[0_1rem_1rem_-1rem_rgba(0,0,0,0.35)] px-5xl! pbs-5xl! xl:pbs-x!">
+      <GlassBlock as="section" className="inline-full mbs-5xl! shadow-[0_1rem_1rem_-1rem_rgba(0,0,0,0.35)] px-5xl! pbs-5xl! xl:pbs-xl!">
         <div className="absolute -z-1 inset-none rounded-inherit bg-linear-135 from-(--ds-bg-brand-solid) to-(--ds-bg-alt-solid) opacity-10" />
 
         <div className="flex flex-col @xl/glass-block:flex-row gap-3xl items-center justify-around">
@@ -23,11 +23,14 @@ export default function HeroSection() {
             <Badge variant="alt" size="lg" label="#NoBullshit" />
           </div>
 
-          <img src="/images/moi.png" alt="" className="translate-y-lg g:shrink-0" />
+          <img src={`${import.meta.env.BASE_URL}images/moi.png`} alt="" className="translate-y-lg shrink-0" />
         </div>
       </GlassBlock>
 
-      <img className="absolute -z-1 inline-[20rem] inset-bs-[10rem] inset-s-[-15rem] -rotate-5 shadow-lg select-none" />
+      <img
+        src="https://shop-api.adsystem.pl/file/image?hash=910b2ba6-6806-49eb-ac20-8d072779f382_1200_1200&f=webp"
+        className="absolute -z-1 inline-[20rem] inset-bs-[10rem] inset-s-[-15rem] -rotate-5 shadow-lg select-none"
+      />
     </div>
   );
 }

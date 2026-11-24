@@ -7,7 +7,9 @@ export default function Legal() {
   return (
     <div className="mbs-3xl grid gap-x-8xl gap-y-3xl desktop:grid-cols-[3fr_1fr]">
       <div className="flex flex-col gap-3xl max-w-2xl">
-        <h1 tabIndex={-1} className="text-title-lg font-bold">{t("pages.legal.heading")}</h1>
+        <h1 tabIndex={-1} className="text-title-lg font-bold">
+          {t("pages.legal.heading")}
+        </h1>
 
         <Markdown>{t("pages.legal.date", { date: formatDate(locale) })}</Markdown>
 
@@ -20,7 +22,7 @@ export default function Legal() {
       </div>
 
       <div className="shrink-0 flex flex-col sticky inset-bs-[calc(var(--header-height)+var(--ds-spacing-3xl))] inline-full w-full desktop:w-auto">
-        <img src="/images/moi.png" alt="" className="w-xs mx-auto" />
+        <img src={`${import.meta.env.BASE_URL}images/moi.png`} alt="" className="w-xs mx-auto" />
         <p className="border-bs-4 border-inverse-secondary pbs-3xl italic flex flex-col items-center">
           <span className="font-extrabold text-title-xs text-brand-primary">StudioB04</span>
           <span className="text-sm">(Entreprise Individuelle)</span>
