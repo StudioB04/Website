@@ -9,7 +9,7 @@ describe("entry-server", () => {
 
     expect(locale).toBe("en");
     expect(html).toContain("<h1");
-    expect(html).toContain(dictionaries.en.pages.legal.title);
+    expect(html).toContain(dictionaries.en.pages.legal.heading);
     expect(head).toContain("<title>Legal notice – StudioB04</title>");
   });
 
@@ -40,7 +40,7 @@ describe("entry-server under a base path (GitHub Pages)", () => {
 
     expect(locale).toBe("en");
     expect(html).toContain("<h1");
-    expect(html).toContain(dictionaries.en.pages.legal.title);
+    expect(html).toContain(dictionaries.en.pages.legal.heading);
   });
 
   it("prefixes every internal link with the base path", async () => {

@@ -4,9 +4,10 @@ import { useI18n } from "@/i18n";
 import { Outlet } from "react-router";
 import { Icon, SkipLink } from "@studio_b04/ds/uikit";
 import { setHTMLCustomProp } from "@studio_b04/ds/utils";
-import { Footer, Header } from "@/layouts";
+import { Footer, Header, PreHeader } from "@/layouts";
 
 import "./MainLayout.css";
+import SettingsPanel from "@/components/SettingsPanel/SettingsPanel";
 
 export default function MainLayout() {
   const { t } = useI18n();
@@ -41,11 +42,7 @@ export default function MainLayout() {
 
       <div className="main-layout">
         <section className="main-layout__preheader">
-          <span>À vos côtés depuis 2009</span>
-          <a className="main-layout__preheader__link" href="tel:+33644282055" aria-label="+33 (0) 644 28 20 55">
-            <Icon src="phone" size={16} />
-            +33 (0) 644 28 20 55
-          </a>
+          <PreHeader />
         </section>
 
         <header id="header" ref={headerRef} className="main-layout__header" role="banner">
@@ -53,7 +50,9 @@ export default function MainLayout() {
         </header>
 
         <main id="main" ref={mainRef} className="main-layout__inner">
-          <Outlet />
+          <div className="main-layout__inner__container">
+            <Outlet />
+          </div>
 
           <button
             type="button"
@@ -70,11 +69,7 @@ export default function MainLayout() {
           <Footer />
         </footer>
 
-        {/* <button className="main-layout__options" popoverTarget="options" title={t("common.settings.title")}>
-          <div className="sr-only">{t("common.settings.title")}</div>
-          <Icon src="settings" size={24} />
-        </button>
-        <SettingsPanel /> */}
+        <SettingsPanel />
       </div>
     </>
   );

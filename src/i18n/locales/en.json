@@ -9,10 +9,35 @@
       "footer": "Skip to footer"
     },
     "settings": {
-      "title": "Accessibility settings and preferences"
+      "title": "Accessibility settings and preferences",
+      "theme": {
+        "title": "Theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
     },
+    "contact": {
+      "email": {
+        "label": "contact@studiob04.com",
+        "title": "Contact us by email",
+        "href": "mailto:contact@studiob04.com?subject=Contact%20from%20the%20website"
+      },
+      "phone": {
+        "label": "+33 (0) 644 28 20 55",
+        "title": "Contact us by phone",
+        "href": "tel:+33644282055"
+      },
+      "linkedin": {
+        "label": "LinkedIn",
+        "title": "Follow us on LinkedIn",
+        "href": "https://www.linkedin.com/company/studiob04"
+      }
+    },
+    "pre-header-text": "🇫🇷 At your side since 2009!",
     "main-menu": {
-      "title": "Main menu"
+      "title": "Main menu",
+      "cta": "Shall we call?"
     },
     "buttons": {
       "scroll-to-top": "Scroll to top",
@@ -33,7 +58,25 @@
       "slug": "legal-notice",
       "link": "Legal notice",
       "title": "Legal notice – StudioB04",
-      "description": "Legal notice for the StudioB04 website."
+      "description": "Legal notice for the StudioB04 website.",
+      "heading": "Legal notice",
+      "date": "Last updated: **_{{date}}_**",
+      "brand": {
+        "title": "Trademarks and copyright",
+        "content": "The modification, reuse or retransmission of the texts and images on this site is prohibited without the prior authorization of [Mr. Thomas PIERRE](mailto:contact@studiob04.com), the owner of the site. Failure to comply with this rule will result in legal action."
+      },
+      "responsability": {
+        "title": "Liability",
+        "content": "[Mr. Thomas PIERRE](mailto:contact@studiob04.com) cannot be held liable for any third-party site that a visitor accesses through a hyperlink on this site. The content of third-party sites is the sole responsibility of their respective publishers. The existence of a link between this site and a third-party site in no way means that the company endorses the content of that site, still less the use that may be made of it.\n\nThe company **StudioB04** and [Mr. Thomas PIERRE](mailto:contact@studiob04.com) cannot be held liable in the event of a virus or other computer parasite transmitted through these third-party sites.\n\nUnder no circumstances shall **StudioB04** be held liable for any direct, indirect or special damages resulting from the use of the site and/or the interpretation of its content.\n\n**StudioB04** cannot be held liable for any loss of business, commercial or financial loss, or any loss of programs or data in the computer systems of visitors to this site."
+      },
+      "edition": {
+        "title": "Publisher",
+        "content": "This site, its domains and all the subdomains attached to it are managed by [Mr. Thomas PIERRE](mailto:contact@studiob04.com), as webmaster. For any question about this site, please email us at this address: [contact@studiob04.com](mailto:contact@studiob04.com). The content of this site, including comments and files, is published under the responsibility of [Mr. Thomas PIERRE](mailto:contact@studiob04.com), as publication director."
+      },
+      "hosting": {
+        "title": "Hosting and content management",
+        "content": "The domain names linked to this site are managed by [OVH](https://www.ovh.com/) (registered office: 2 rue Kellermann, 59100 Roubaix, France) and administered by [Mr. Thomas PIERRE](mailto:contact@studiob04.com), as manager of the company **StudioB04**.\n\nThe site is hosted by [Netlify](https://www.netlify.com/), and its content is managed by [Mr. Thomas PIERRE](mailto:contact@studiob04.com), as webmaster."
+      }
     },
     "web": {
       "slug": "digital",

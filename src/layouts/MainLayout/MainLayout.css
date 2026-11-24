@@ -71,46 +71,7 @@
 
 .main-layout__preheader {
   position: relative;
-  color: var(--ds-color-gray-300);
-  background-color: var(--ds-color-gray-900);
-  font-size: var(--ds-font-size-text-sm);
-  font-weight: var(--ds-font-weight-semibold);
-  padding-block: var(--ds-spacing-2xs);
   z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  inline-size: 100%;
-  max-inline-size: 92rem;
-  margin-inline: auto;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: 50%;
-    inset-block: 0;
-    inline-size: 100dvw;
-    block-size: 100%;
-    transform: translateX(-50%);
-    background-color: inherit;
-    z-index: -1;
-  }
-
-  .main-layout__preheader__link {
-    display: flex;
-    align-items: center;
-    gap: var(--ds-spacing-sm);
-    color: inherit;
-    text-decoration: none;
-    border: var(--ds-size-1px) solid transparent;
-    padding: var(--ds-spacing-xs) var(--ds-spacing-lg);
-    border-radius: var(--ds-radius-sm);
-
-    &:is(:hover, :focus-visible) {
-      background-color: var(--ds-bg-brand-primary);
-      border-color: var(--ds-border-brand-primary);
-    }
-  }
 }
 
 .main-layout__header {
@@ -127,15 +88,6 @@
   padding-inline: var(--main-layout-horizontal-padding);
   border-block-end: var(--ds-border-primary-1px);
   z-index: 2;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    inset-block-start: -100%;
-    block-size: 100%;
-    background-color: var(--ds-bg-primary);
-  }
 
   @supports (animation-timeline: scroll()) {
     animation: shrink-header linear both;
@@ -194,6 +146,11 @@
     }
   }
 
+  .main-layout__inner__container {
+    max-inline-size: 90rem;
+    margin-inline: auto;
+  }
+
   .main-layout__inner__top-button {
     position: fixed;
     inset-block-end: var(--footer-height);
@@ -233,32 +190,6 @@
   flex-shrink: 0;
   container-name: footer;
   container-type: inline-size;
-}
-
-.main-layout__options {
-  position: fixed;
-  inset-inline-start: 0;
-  inset-block-end: 6rem;
-  padding: var(--ds-spacing-sm);
-  border-start-end-radius: var(--ds-radius-md);
-  border-end-end-radius: var(--ds-radius-md);
-  background-color: var(--ds-bg-primary);
-  border: var(--ds-border-primary-1px);
-  box-shadow: var(--ds-box-shadow-md);
-  z-index: 4;
-  transition: transform var(--ds-transition-delay-fast) ease;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: -1rem;
-  }
-
-  &:not(:hover, :focus-visible) {
-    transform: translateX(-55%) rotate(-3deg);
-  }
-
-  &:is(:active) {
-    scale: 0.95;
-  }
+  position: relative;
+  overflow: hidden;
 }

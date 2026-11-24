@@ -1,4 +1,6 @@
 .glass-block {
+  container-type: inline-size;
+  container-name: glass-block;
   position: relative;
   isolation: isolate;
   position: relative;
@@ -8,6 +10,7 @@
   border-radius: var(--ds-radius-2xl);
   padding: var(--ds-spacing-xl);
   border: var(--ds-size-1px) double rgba(40 40 40 / 12%);
+  overflow: hidden;
   z-index: 1;
 
   box-shadow:
@@ -19,7 +22,7 @@
     0 var(--ds-size-4px) var(--ds-size-8px) rgba(0 0 0 / 20%);
 
   background-color: rgba(255 255 255 /10%);
-  backdrop-filter: blur(var(--ds-size-2px));
+  backdrop-filter: blur(var(--ds-size-6px));
   filter: brightness(97%);
 
   &::before,
@@ -43,6 +46,6 @@
   &::after {
     z-index: 2;
     filter: blur(var(--ds-size-7px));
-    background: linear-gradient(45deg, rgba(255 255 255 / 40%) 0%, transparent 25%, transparent 75%, rgba(255 255 255 / 40%) 100%);
+    background: linear-gradient(45deg, rgba(255 255 255 / 20%) 0%, transparent 45%, transparent 55%, rgba(255 255 255 / 10%) 100%);
   }
 }

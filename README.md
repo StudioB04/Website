@@ -64,8 +64,8 @@ Les pages se trouvent toutes seules : chaque fichier `src/pages/<Dossier>/<Dossi
 Tous les textes sont dans `src/i18n/locales/fr.json` et `src/i18n/locales/en.json`, qui doivent avoir exactement les mêmes clés et les mêmes `{{paramètres}}` (un test le vérifie ; TypeScript ne le fait plus). Ils ont trois blocs :
 
 - `site` : `site.name`, le nom du site (balises du `<head>`) ;
-- `common` : les textes partagés par les layouts : `skiplinks.{header,main,footer}` (liens d'évitement), `main-menu.title` (nom du menu principal), `buttons.{scroll-to-top,back-to-home}` et `languageSwitcher` (nom du sélecteur de langue, non affiché pour l'instant) ;
-- `pages` : un bloc par page, dont la clé est le chemin de ses dossiers en camelCase (`"home"`, `"legal"`, `"web"`, `"print.global"`), avec `title` et `description` (le `<head>`), `slug` (l'adresse) et `link` (le libellé du menu). Le bloc `error` (`title` avec `{{status}}`, `intro`) est prévu pour les pages d'erreur.
+- `common` : les textes partagés par les layouts : `skiplinks.{header,main,footer}` (liens d'évitement), `main-menu.title` (nom du menu principal), `buttons.{scroll-to-top,back-to-home}`, `languageSwitcher` (nom du choix de langue) et `settings` (`title` du panneau de réglages, `theme.{title,light,dark,system}` pour le choix du thème) ;
+- `pages` : un bloc par page, dont la clé est le chemin de ses dossiers en camelCase (`"home"`, `"legal"`, `"web"`, `"print.global"`), avec `title` et `description` (le `<head>`), `heading` (le `h1`, quand il diffère du `title` : `legal`), `slug` (l'adresse) et `link` (le libellé du menu). Le bloc `error` (`title` avec `{{status}}`, `intro`) est prévu pour les pages d'erreur.
 
 Les composants lisent les textes avec la fonction `t`, qui prend la clé (le chemin dans le JSON, séparé par des points) et, au besoin, les valeurs à insérer :
 
@@ -81,6 +81,7 @@ Dans le JSON, un paramètre s'écrit `{{nom}}` (`"Erreur {{status}}."`) et `t("l
 - `translate(locale, key, params)`, exportée par `@/i18n`, fait la même chose sans React (utilisée pour les balises du `<head>`, voir `src/head/index.ts`).
 - `findMessage(locale, key)` renvoie le texte, ou `undefined` s'il n'existe pas (là où `translate` renvoie la clé) : c'est ce qui sert à lire le `slug` d'une page, qui peut être absent.
 - `useI18n()` renvoie aussi `locale` et `messages` (le dictionnaire complet).
+- `formatDate(locale, isoDate?)`, exportée par `@/i18n`, écrit une date longue avec une majuscule à chaque mot (`Mardi 24 Novembre 2026`) : celle du jour, ou `isoDate` (`"2026-11-24"`). Elle passe par l'API Temporal quand le navigateur la fournit et par `Date` sinon (Node 22 au prérendu) : le texte est le même des deux côtés, donc sans écart à l'hydratation.
 
 Les pages d'erreur (`src/pages/Error/Error.tsx`) lisent `pages.notFound` et `pages.serverError` (`heading`, `intro`), ainsi que `common.buttons.back-to-home` pour le lien de retour. Les fichiers de langue n'ont pour l'instant que le bloc `pages.error` : tant que les deux ne sont pas rapprochés, ces pages affichent les clés à la place des textes, et la 404 n'a ni titre ni description propres dans le `<head>`.
 
@@ -125,9 +126,11 @@ Le bouton « retour en haut » (`.main-layout__inner__top-button`) est fixe, au-
 
 **`GlassBlock` :** composant d'habillage « verre dépoli » (`src/components/GlassBlock`) : un bloc arrondi, translucide et flouté (`backdrop-filter`), `div` par défaut ; la propriété `as` choisit une autre balise (`<GlassBlock as="section">`) et les autres propriétés HTML passent à l'élément.
 
+**Réglages :** le bouton fixe sur le bord de la page (`SettingsPanel`, rendu par `MainLayout`) ouvre un dialog qui contient `LanguageButton` (un bouton vers la même page dans l'autre langue, avec navigation interne) et `ThemeSwitcher` (clair, sombre ou système). Le thème est géré par `useTheme()` (`src/theme`) : l'attribut `data-ds-theme` de `<html>` (absent pour « système »), mémorisé dans `localStorage` ; un petit script en ligne de `index.html` le repose avant le premier affichage pour éviter un clignotement.
+
 Classes issues du thème : `bg-secondary`, `text-secondary`, `text-brand`, `border-primary`, `text-title-xl`, `leading-title-xl`, `rounded-lg`, etc. L'espacement est basé sur `--ds-spacing-unit` (0,5 rem) : `p-3` = 1,5 rem. Le thème supprime la palette Tailwind par défaut (`--color-*: initial`) : seules les couleurs du design system existent. Pour une valeur sans classe, utiliser un jeton en valeur arbitraire : `bg-(--ds-bg-inverse)`, `text-(color:--ds-text-inverse)`.
 
-Il n'y a pas de bouton de changement de thème. Le site suit le réglage clair/sombre du système, uniquement en CSS : les jetons du design system (`@studio_b04/ds/styles`) changent de valeur selon `prefers-color-scheme`, le reset applique `--ds-bg-primary` et `--ds-text-primary` au `body`, et le thème Tailwind pointe vers ces mêmes jetons, d'où l'absence de variante `dark:`. Le site n'écrit jamais l'attribut `data-ds-theme` (`light` ou `dark`) qui forcerait un thème ; `index.html` déclare `<meta name="color-scheme" content="light dark">` pour que les contrôles natifs suivent aussi.
+Par défaut, le site suit le réglage clair/sombre du système, uniquement en CSS : les jetons du design system (`@studio_b04/ds/styles`) changent de valeur selon `prefers-color-scheme`, le reset applique `--ds-bg-primary` et `--ds-text-primary` au `body`, et le thème Tailwind pointe vers ces mêmes jetons, d'où l'absence de variante `dark:`. Le choix « clair » ou « sombre » du dialog des réglages pose l'attribut `data-ds-theme` sur `<html>` (voir « Réglages » plus haut) ; `index.html` déclare `<meta name="color-scheme" content="light dark">` pour que les contrôles natifs suivent aussi.
 
 ## Tests
 
@@ -149,8 +152,9 @@ src/
   router/                   Router/Router.tsx : les <Route> générées (une par page de src/pages et par langue : français à la racine, anglais sous /en/ ; la 404) et la mise à jour de lang/titre/description/focus ; ErrorBoundary/ErrorBoundary.tsx : la page 500 si une page plante ; routes/ : routes.ts (getSlug, getPath, getAlternates, findPage, isCurrentPage…), pageFiles.ts (règles de nommage des pages) et pageModules.ts (pages trouvées par Vite), avec leurs tests ; index.ts exporte le tout
   head/                     index.ts : balises SEO du <head> (et son test)
   config.ts                 URL publique, sous-dossier d'hébergement (BASE_URL) et mode préprod (NOINDEX)
-  i18n/                     index.tsx (I18nProvider, useI18n, t, translate, findMessage), locales/fr.json et en.json (et le test)
-  components/               un dossier par composant (AppLink, GlassBlock, LanguageSwitcher) et index.ts qui les exporte
+  i18n/                     index.tsx (I18nProvider, useI18n, t, translate, findMessage, formatDate), formatDate.ts (date longue : Temporal, sinon Date), locales/fr.json et en.json (et les tests)
+  theme/                    index.ts : useTheme (thème clair, sombre ou du système), applyTheme, getStoredTheme (et son test)
+  components/               un dossier par composant (AppLink, GlassBlock, LanguageButton, LanguageSwitcher, SettingsPanel, ThemeSwitcher) et index.ts qui les exporte
   layouts/                  un dossier par layout, avec son .css : MainLayout (liens d'évitement, en-tête, <main> avec l'<Outlet /> et le bouton « retour en haut », pied de page ; son test), Header (logo, MainNavigation), MainNavigation (menu principal), Footer, SubFooter (non affiché) ; index.ts les exporte
   pages/                    un dossier par page, imbriquable (Home, Legal, Web, Print, Enseignes, Salons ; Print/Global/Global.tsx pour une page imbriquée) ; Error/Error.tsx : pages 404 et 500, sans adresse ; index.ts n'exporte que ErrorPage
   styles/global.css         ordre des couches CSS, imports (Tailwind, design system), police, blocs :root et #root

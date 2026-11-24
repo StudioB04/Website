@@ -1,31 +1,40 @@
-@layer theme, fonts, utilities, components;
+@layer tailwind, theme, project;
 
-@import "tailwindcss" layer(theme);
-@import "@studio_b04/ds/styles/tokens" layer(theme);
+@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300..900&display=swap") layer(theme);
 @import "@studio_b04/ds/styles/reset" layer(theme);
-@import "@studio_b04/ds/styles/tailwind-theme" layer(theme);
+@import "@studio_b04/ds/styles/tokens" layer(theme);
 
-@layer fonts {
+@import "tailwindcss/theme.css" layer(tailwind);
+@import "tailwindcss/preflight.css" layer(tailwind);
+@import "@studio_b04/ds/styles/tailwind-theme" layer(tailwind);
+@import "tailwindcss/utilities.css" layer(project);
+
+@layer theme {
   :root {
     --ds-font-family-sans: "Red Hat Display", sans-serif;
-    --ds-font-family-mono: "Red Hat Mono", monospace;
-    --ds-font-family-serif: "Noto Serif", serif;
   }
 }
 
-body {
-  min-height: 100dvh;
-  color: var(--ds-text-primary);
-  background-color: var(--ds-bg-primary);
-  font-family: var(--ds-font-family-sans);
+@layer project {
+  html {
+    overscroll-behavior-y: none;
 
-  #root {
-    container-type: inline-size;
-    container-name: screen;
-    min-block-size: 100dvh;
-    inline-size: 100dvw;
-    max-inline-size: 1920px;
-    margin-inline: auto;
-    overflow-x: clip;
+    body {
+      min-height: 100dvh;
+      color: var(--ds-text-primary);
+      background-color: var(--ds-color-gray-900);
+      font-family: var(--ds-font-family-sans);
+
+      #root {
+        container-type: inline-size;
+        container-name: screen;
+        min-block-size: 100dvh;
+        inline-size: 100dvw;
+        max-inline-size: 1920px;
+        margin-inline: auto;
+        overflow-x: clip;
+        background-color: var(--ds-bg-primary);
+      }
+    }
   }
 }

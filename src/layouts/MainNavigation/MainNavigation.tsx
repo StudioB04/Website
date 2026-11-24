@@ -11,6 +11,7 @@ import "./MainNavigation.css";
 function MainNavigationInner({ variant = "mobile", onChange }: { variant?: "desktop" | "mobile"; onChange?: () => void }) {
   const { locale, t } = useI18n();
   const { pathname } = useLocation();
+  const { isMd } = useWindowSize();
 
   return (
     <nav className={clsx("main-navigation__inner", `main-navigation__inner--${variant}`)} role="navigation" aria-label={t("common.main-menu.title")}>
@@ -28,7 +29,13 @@ function MainNavigationInner({ variant = "mobile", onChange }: { variant?: "desk
         ))}
 
         <li className="main-navigation__inner__list__item">
-          <Button className="main-navigation__inner__list__item__button" label="On s'apelle ?" iconStart="phone-call" shape="outline" size="sm" />
+          <Button
+            className="main-navigation__inner__list__item__button"
+            label={t("common.main-menu.cta")}
+            iconStart="phone-call"
+            shape="pill"
+            size={isMd ? "sm" : "lg"}
+          />
         </li>
       </ul>
     </nav>

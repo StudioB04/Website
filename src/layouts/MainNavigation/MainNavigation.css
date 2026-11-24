@@ -36,6 +36,15 @@
 
     .main-navigation__inner__list__item__button {
       margin-inline-start: var(--ds-spacing-3xl);
+
+      &:is(:hover, :focus-visible) {
+        scale: 1.025;
+        rotate: -1deg;
+      }
+
+      &:is(:active) {
+        scale: 0.975;
+      }
     }
   }
 }

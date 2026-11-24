@@ -9,10 +9,35 @@
       "footer": "Aller au pied de page"
     },
     "settings": {
-      "title": "Paramètres d'accessibilité et préférences"
+      "title": "Paramètres d'accessibilité et préférences",
+      "theme": {
+        "title": "Thème",
+        "light": "Clair",
+        "dark": "Sombre",
+        "system": "Système"
+      }
     },
+    "contact": {
+      "email": {
+        "label": "contact@studiob04.com",
+        "title": "Contactez-nous par email",
+        "href": "mailto:contact@studiob04.com?subject=Contact%20depuis%20le%20site"
+      },
+      "phone": {
+        "label": "06 44 28 20 55",
+        "title": "Contactez-nous par téléphone",
+        "href": "tel:+33644282055"
+      },
+      "linkedin": {
+        "label": "LinkedIn",
+        "title": "Suivez-nous sur LinkedIn",
+        "href": "https://www.linkedin.com/company/studiob04"
+      }
+    },
+    "pre-header-text": "🇫🇷 À vos côtés depuis 2009 !",
     "main-menu": {
-      "title": "Menu principal"
+      "title": "Menu principal",
+      "cta": "On s'apelle ?"
     },
     "buttons": {
       "scroll-to-top": "Retour en haut de page",
@@ -33,7 +58,25 @@
       "slug": "mentions-legales",
       "link": "Mentions légales",
       "title": "Mentions légales – StudioB04",
-      "description": "Mentions légales du site StudioB04."
+      "description": "Mentions légales du site StudioB04.",
+      "heading": "Mentions légales",
+      "date": "Dernière mise à jour : **_{{date}}_**",
+      "brand": {
+        "title": "Marques et droits d'auteur",
+        "content": "La modification, la réutilisation, la retransmission des textes et images du présent site sont interdites sauf autorisation préalable de [M. Thomas PIERRE](mailto:contact@studiob04.com), propriétaire du site. Le non respect de cette règle entrainera des poursuites judiciaires."
+      },
+      "responsability": {
+        "title": "Responsabilité",
+        "content": "La responsabilité de [M. Thomas PIERRE](mailto:contact@studiob04.com) ne saurait être engagée au titre d’un site tiers auquel le visiteur accéderait via le présent site grâce à un lien hypertexte. Les contenus des sites tiers engagent la seule responsabilité de leurs éditeurs respectifs. L’existence d’un lien entre ce site et un site tiers ne signifie en aucun cas que l’entreprise cautionne le contenu de ce site et à fortiori l’usage qui pourrait en être fait.\n\nLa responsabilité de le société **StudioB04** ou de [M. Thomas PIERRE](mailto:contact@studiob04.com) ne pourrait être engagée dans le cas d’une éventuelle attaque de virus ou autre parasite informatique transitant par ces sites tiers.\n\nEn aucun cas l’entreprise **StudioB04** ne sera tenue pour responsable des dommages directs, indirects ou spéciaux résultant de l’usage du site et/ou de l’interprétation de ses contenus. \n\nL’entreprise **StudioB04** ne pourra être tenue pour responsable de toute perte d’exploitation, commerciale, financière ou de toute perte de programmes ou de données dans les systèmes informatiques des visiteurs de ce site."
+      },
+      "edition": {
+        "title": "Édition",
+        "content": "Ce site, les domaines et tous les sous-domaines qui y sont rattachés sont géré par [M. Thomas PIERRE](mailto:contact@studiob04.com), en qualité de webmaster. Pour toute question relative à ce site, envoyez nous un mail à cette adresse : [contact@studiob04.com](mailto:contact@studiob04.com). Le contenu de ce site, les commentaires, les fichiers et tout le contenu de ce site est édité sous la responsabilité de [M. Thomas PIERRE](mailto:contact@studiob04.com), en qualité de directeur de la publication."
+      },
+      "hosting": {
+        "title": "Hébergement et gestion de contenu",
+        "content": "Les noms de domaines liés à ce site sont gérés par [OVH](https://www.ovh.com/) (Siège social : 2 rue Kellermann, 59100 Roubaix) et administrés par [M. Thomas PIERRE](mailto:contact@studiob04.com), en qualité de gérant de la société **StudioB04**.\n\nL'hébergement du site est assuré par [Netlify](https://www.netlify.com/) et la gestion de son contenu est réalisée par [M. Thomas PIERRE](mailto:contact@studiob04.com), en qualité de webmaster."
+      }
     },
     "web": {
       "slug": "numerique",

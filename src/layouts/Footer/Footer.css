@@ -1,7 +1,8 @@
 .footer {
   position: relative;
-  background-color: var(--ds-bg-primary);
+  background-color: var(--ds-bg-tertiary);
   margin-block-start: var(--ds-spacing-3xl);
-  margin-inline: calc(-1 * var(--main-layout-horizontal-padding));
   padding: var(--main-layout-horizontal-padding);
+  margin-block-end: var(--main-layout-horizontal-padding);
+  border-radius: var(--main-layout-border-radius);
 }

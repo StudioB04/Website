@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import fr from "./locales/fr.json";
 import en from "./locales/en.json";
 
+export { formatDate } from "./formatDate";
+
 export type Messages = typeof fr;
 export type MessageKey = string;
 export type TranslationParams = Record<string, string | number>;

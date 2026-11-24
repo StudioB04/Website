@@ -46,7 +46,7 @@ describe("Router", () => {
   it("does not affect the other pages", () => {
     renderAt("/mentions-legales/");
 
-    expect(screen.getByRole("heading", { level: 1, name: dictionaries.fr.pages.legal.title })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: dictionaries.fr.pages.legal.heading })).toBeDefined();
     expect(screen.queryByText(translate("fr", "pages.serverError.heading"))).toBeNull();
   });
 
