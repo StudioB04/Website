@@ -12,8 +12,10 @@
   color: var(--ds-text-secondary);
 
   &.main-navigation__inner--mobile {
+    --main-navigation-gap: var(--ds-spacing-3xl);
+
     flex-direction: column;
-    gap: var(--ds-spacing-3xl);
+    gap: var(--main-navigation-gap);
     padding-block: var(--ds-spacing-3xl);
     font-size: 1.6rem;
 
@@ -23,14 +25,17 @@
   }
 
   &.main-navigation__inner--desktop {
+    --main-navigation-gap: var(--ds-spacing-md);
+
     flex-direction: row;
     inline-size: 100%;
     justify-content: end;
-    gap: var(--ds-spacing-md);
+    gap: var(--main-navigation-gap);
     font-size: var(--ds-font-size-text-md);
 
     @media screen and (width > 75rem) {
-      gap: var(--ds-spacing-xl);
+      --main-navigation-gap: var(--ds-spacing-xl);
+
       font-size: var(--ds-font-size-text-lg);
     }
 
@@ -50,6 +55,9 @@
 }
 
 .main-navigation__inner__list {
+  position: relative;
+  isolation: isolate;
+  anchor-scope: --main-navigation-target;
   display: flex;
   flex-direction: inherit;
   align-items: inherit;
@@ -59,16 +67,22 @@
   font-weight: var(--ds-font-weight-semibold);
 
   .main-navigation__inner__list__item__link {
+    position: relative;
     border-radius: var(--ds-radius-xs);
-    padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+    padding: var(--ds-spacing-xs) var(--ds-spacing-lg);
     display: block;
+    transition:
+      color var(--ds-transition-delay-faster) ease,
+      scale var(--ds-transition-delay-faster) ease;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: calc(-0.5 * var(--main-navigation-gap));
+    }
 
     &:is(:hover, :focus-visible) {
       color: var(--ds-text-brand-primary);
-      background-color: var(--ds-bg-brand-primary);
-      box-shadow: var(--ds-box-shadow-md);
-      scale: 1.025;
-      rotate: -1deg;
     }
 
     &:is(:active) {
@@ -77,6 +91,51 @@
 
     &[aria-current="page"] {
       color: var(--ds-text-brand-primary);
+    }
+  }
+
+  @supports (anchor-name: --main-navigation-target) {
+    &::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      position-anchor: --main-navigation-target;
+      top: anchor(top);
+      left: anchor(left);
+      width: anchor-size(width);
+      height: anchor-size(height);
+      border-radius: var(--ds-radius-xs);
+      background-color: var(--ds-bg-brand-primary);
+      box-shadow: var(--ds-box-shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition-property: top, left, width, height, opacity, rotate;
+      transition-duration: var(--ds-transition-delay-regular);
+      transition-timing-function: ease;
+    }
+
+    &:has(.main-navigation__inner__list__item__link:is(:hover, :focus-visible, [aria-current="page"])) {
+      &::after {
+        opacity: 1;
+      }
+
+      .main-navigation__inner__list__item__link:is(:hover, :focus-visible) {
+        anchor-name: --main-navigation-target;
+      }
+    }
+
+    &:not(:has(.main-navigation__inner__list__item__link:is(:hover, :focus-visible))) {
+      .main-navigation__inner__list__item:first-child .main-navigation__inner__list__item__link,
+      .main-navigation__inner__list__item__link[aria-current="page"] {
+        anchor-name: --main-navigation-target;
+      }
+    }
+  }
+
+  @supports not (anchor-name: --main-navigation-target) {
+    .main-navigation__inner__list__item__link:is(:hover, :focus-visible) {
+      background-color: var(--ds-bg-brand-primary);
+      box-shadow: var(--ds-box-shadow-md);
     }
   }
 }

@@ -11,7 +11,7 @@ export default function SettingsPanel() {
     <>
       <button
         className={clsx(
-          "fixed inset-e-0 inset-bs-[30%] p-sm bg-primary border border-primary rounded-s-xl shadow-md z-4 translate-x-[30%] -rotate-3",
+          "fixed inset-s-0 inset-be-5xl p-sm bg-secondary border border-primary rounded-e-xl shadow-md z-4 translate-x-[-30%] -rotate-3",
           "hover:translate-x-0 focus-visible:translate-x-0",
           "active:scale-95",
           "transition-transform duration-200",
@@ -22,7 +22,7 @@ export default function SettingsPanel() {
         <Icon src="settings" size={24} />
       </button>
 
-      <Dialog id="options" position="end" size="sm" title={t("common.settings.title")}>
+      <Dialog id="options" position="start" size="sm" title={t("common.settings.title")}>
         <div className="flex flex-col gap-2xl">
           <LanguageButton />
           <ThemeSwitcher />

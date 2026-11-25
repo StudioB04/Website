@@ -14,15 +14,6 @@
   }
 }
 
-@keyframes parallax-dots {
-  to {
-    opacity: 0;
-    background-position:
-      0 calc(-1 * var(--parallax-ratio) * var(--fade-distance)),
-      calc(var(--dot-gap) / 2) calc(var(--dot-gap) - var(--parallax-ratio) * var(--fade-distance));
-  }
-}
-
 .main-layout {
   --main-layout-header-size-max: 4rem;
   --main-layout-header-size-min: 3rem;
@@ -89,6 +80,16 @@
   border-block-end: var(--ds-border-primary-1px);
   z-index: 2;
 
+  &::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 100%;
+    block-size: 5rem;
+    background-color: var(--ds-bg-primary);
+    z-index: -1;
+  }
+
   @supports (animation-timeline: scroll()) {
     animation: shrink-header linear both;
     animation-timeline: scroll(root block);
@@ -113,15 +114,15 @@
 
   &::before {
     --dot-size: var(--ds-size-1px);
-    --dot-gap: var(--ds-size-8px);
+    --dot-gap: var(--ds-size-6px);
     --dot: radial-gradient(circle, var(--ds-text-placeholder) var(--dot-size), transparent var(--dot-size));
-    --fade-distance: 350px;
+    --fade-distance: 250px;
     --parallax-ratio: -0.5;
 
     content: "";
     display: block;
     position: sticky;
-    top: 0;
+    inset-block-start: 0;
     flex: none;
     inline-size: calc(100% + 2 * var(--main-layout-horizontal-padding));
     block-size: calc(100cqh + 2 * var(--ds-spacing-lg));
@@ -132,18 +133,9 @@
     background-position:
       0 0,
       calc(var(--dot-gap) / 2) var(--dot-gap);
-    mask-image: radial-gradient(circle, black 0%, transparent 100%);
+    mask-image: radial-gradient(circle, black 0%, transparent 70%);
     opacity: 0.3;
     z-index: -1;
-
-    @supports (animation-timeline: scroll()) {
-      animation-name: parallax-dots;
-      animation-duration: auto;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: scroll(root block);
-      animation-range: 0 var(--fade-distance);
-    }
   }
 
   .main-layout__inner__container {

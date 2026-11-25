@@ -15,7 +15,8 @@ export default function HeroSection() {
               </span>
               <span className="block">vous accompagner dans tous vos projets de communication.</span>
             </h1>
-            <p className="text-xl text-tertiary text-center xl:text-start">
+
+            <p className="text-xl text-secondary text-center xl:text-start">
               Depuis 2009, l’agence s’est développée en aidant les PME et les ETI à se démarquer sur leur marché, en physique et en ligne avec une promesse : Un
               interlocuteur unique pour vous aider de A à Z dans toutes vos démarches.
             </p>
@@ -27,10 +28,10 @@ export default function HeroSection() {
         </div>
       </GlassBlock>
 
-      <img
+      {/* <img
         src="https://shop-api.adsystem.pl/file/image?hash=910b2ba6-6806-49eb-ac20-8d072779f382_1200_1200&f=webp"
         className="absolute -z-1 inline-[20rem] inset-bs-[10rem] inset-s-[-15rem] -rotate-5 shadow-lg select-none"
-      />
+      /> */}
     </div>
   );
 }

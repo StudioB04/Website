@@ -94,7 +94,7 @@ Les pages `Home` et `Legal` n'affichent que du lorem ipsum (et, pour `Legal`, so
 ## Accessibilité
 
 - Trois liens d'évitement (`SkipLink` du design system, textes traduits dans `common.skiplinks`) vers l'en-tête (`#header`), le contenu (`#main`) et le pied de page (`#footer`), placés avant l'en-tête : chaque ancre doit correspondre à un `id` présent dans la page (un test le vérifie). Repères de page : `banner` (`header`), `main` et `contentinfo` (`footer`).
-- Le menu principal (`MainNavigation`) est une `<nav>` nommée (`common.main-menu.title`) dont le lien de la page affichée porte `aria-current="page"` (`isCurrentPage`). Sur petit écran, il se range dans une fenêtre (`Dialog` du design system) ouverte par un bouton, et se referme au choix d'une page.
+- Le menu principal (`MainNavigation`) est une `<nav>` nommée (`common.main-menu.title`) dont le lien de la page affichée porte `aria-current="page"` (`isCurrentPage`). Sur petit écran, il se range dans une fenêtre (`Dialog` du design system) ouverte par un bouton, et se referme au choix d'une page. Au survol ou au focus clavier d'un lien, un fond unique glisse d'un lien à l'autre (`::after` de la liste, positionné par ancrage CSS ; si le navigateur ne gère pas l'ancrage, le fond reste sur le lien lui-même).
 - Le bouton « retour en haut » est hors de l'ordre de tabulation et de l'arbre d'accessibilité tant qu'il est caché (`inert`) ; il a un `title` et un texte pour lecteur d'écran traduits (`common.buttons.scroll-to-top`).
 - `AppLink` et `LanguageSwitcher` (non affiché pour l'instant) signalent la page courante par `aria-current` et la langue par `lang`.
 - Anneau de focus visible sur tous les éléments, fourni par le reset du design system.
